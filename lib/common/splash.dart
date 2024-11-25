@@ -67,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen>
                   style: TextStyle(
                     color: const Color.fromARGB(255, 63, 61, 61),
                     fontStyle: FontStyle.italic,
-                    fontSize: MediaQuery.of(context).size.width * 0.05, // Responsive font size
+                    fontSize: MediaQuery.of(context).size.width * 0.045, // Responsive font size
                   ),
                   textAlign: TextAlign.center,
                 ),
