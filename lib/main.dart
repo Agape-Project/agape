@@ -2,17 +2,18 @@ import 'package:agape/common/splash.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const test());
+  runApp(const MyApp());
 }
 
 
-class test extends StatelessWidget {
-  const test({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: SplashScreen(),
+          debugShowCheckedModeBanner: false,
+          home: SplashScreen(),
     );
   }
 }
