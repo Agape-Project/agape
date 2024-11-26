@@ -1,0 +1,99 @@
+import 'package:agape/auth/screens/login_screen.dart';
+import 'package:agape/widgets/button.dart';
+import 'package:agape/widgets/text_field.dart';
+import 'package:flutter/material.dart';
+
+class ForgotPasswordScreen extends StatefulWidget {
+  static const routeName = '/forgot-password';
+  const ForgotPasswordScreen({Key? key}) : super(key: key);
+
+  @override
+  _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
+}
+
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  final _emailController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  void sendPasswordResetLink() {
+    final email = _emailController.text.trim();
+
+    // if(email.isNotEmpty){
+    //   ref.read(authControllerProvider).sendPasswordResetEmail(
+    //     context: context,
+    //     email: email,
+    //   );
+    // } else {
+    //   showSnackBar(context, "Please enter your email");
+    // }
+ 
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Forgot Password"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'images/amico.png',
+                height: 200,
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                "Enter your Email address below and we will send you code to reset it",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 20),
+              TextFieldInput(
+                textEditingController: _emailController,
+                hintText: "Email",
+                icon: Icons.email,
+                textInputType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 20),
+              MyButtons (
+                onTap: sendPasswordResetLink,
+                text: "Send",
+                
+              ),
+              ElevatedButton(
+                      onPressed: () {
+                  // Navigate to the next screen or complete onboarding
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginScreen(), 
+                    ),
+                  );
+                },
+                      style: ElevatedButton.styleFrom(
+                            backgroundColor: Color.fromRGBO(255, 255, 255, 1), // Blue-black background color
+                            foregroundColor: Color.fromRGBO(9, 19, 58, 1), // White text color
+                            minimumSize: Size(150, 50), // Ensures consistent size
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8), // Slightly curved edges
+                            ),
+                          ),
+                      child: const Text("Log in"),
+                    ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
