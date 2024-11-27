@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ResetPasswordPage extends ConsumerStatefulWidget {
+  final String email;
+
+  ResetPasswordPage({super.key, required this.email});
   @override
   _ResetPasswordPageState createState() => _ResetPasswordPageState();
 }
@@ -39,7 +42,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
 
       final authController = ref.read(authControllerProvider);
 
-      await authController.setNewPassword(newPassword, confirmPassword);
+      await authController.setNewPassword(widget.email, newPassword, confirmPassword);
 
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const LoginScreen()));

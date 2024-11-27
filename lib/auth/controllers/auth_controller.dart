@@ -52,10 +52,14 @@ class AuthController {
     }
   }
 
-  Future<String> setNewPassword(String password1, String password2) async {
+  Future<String> setNewPassword(String email, String password, String password2) async {
     try {
       final response = await authRepository
-          .setNewPassword({"password1": password1, "password2": password2});
+          .setNewPassword({
+            "email": email,
+            "password": password, 
+            "password2": password2
+        });
       return response;
     } catch (e) {
       rethrow;

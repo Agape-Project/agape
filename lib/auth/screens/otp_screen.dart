@@ -42,7 +42,7 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => ResetPasswordPage(),
+          builder: (context) => ResetPasswordPage(email: widget.email),
         ),
       );
     } else {
