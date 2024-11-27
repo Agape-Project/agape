@@ -3,6 +3,7 @@ import 'package:agape/auth/screens/forgot_password.dart';
 import 'package:agape/widgets/button.dart';
 import 'package:agape/widgets/snackbar.dart';
 import 'package:agape/widgets/text_field.dart';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,39 +15,64 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-void login() async {
-  final email = _emailController.text.trim();
-  final password = _passwordController.text.trim();
+  bool _isPasswordVisible = false;
 
-  if (email.isNotEmpty && password.isNotEmpty) {
-    try {
-      final response =
-          await ref.read(authControllerProvider).login(email, password);
-      showSnackBar(context, response);
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
-      );
-    } catch (e) {
-      showSnackBar(context, e.toString());
+  void login() async {
+    if (_formKey.currentState!.validate()) {
+      // Perform login if form is valid
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+
+      try {
+        final response =
+            await ref.read(authControllerProvider).login(email, password);
+        // Show success snackbar
+        showCustomSnackBar(
+          context,
+          title: 'Success',
+          message: 'Logged in successfully',
+          type: AnimatedSnackBarType.success,
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+        );
+      } catch (e) {
+        // Show error snackbar for invalid login
+        showCustomSnackBar(
+          context,
+          title: 'Error',
+          message: 'Invalid email or password',
+          type: AnimatedSnackBarType.error,
+        );
+      }
+    } else {
+      // Form validation failed
+      // showCustomSnackBar(
+      //   context,
+      //   title: 'Error',
+      //   message: 'Please fix the errors in the form',
+      //   type: AnimatedSnackBarType.error,
+      // );
     }
-  } else {
-    showSnackBar(context, "Please enter your email and password");
   }
-}
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size; // Get screen size
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Agape Mobility Ethiopia"), 
+        title: const Text(""),
         centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -60,62 +86,103 @@ void login() async {
                 constraints: const BoxConstraints(
                   maxWidth: 400, // Limit width on larger screens
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: 20),
-                    const Text(
-                      "Login",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24, 
-                        fontWeight: FontWeight.bold,
+                child: Form(
+                  key: _formKey, // Attach form key here
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Login",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 30),
-                    TextFieldInput(
-                      textEditingController: _emailController,
-                      hintText: "Email",
-                      icon: Icons.email,
-                      textInputType: TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: 20),
-                    TextFieldInput(
-                      textEditingController: _passwordController,
-                      hintText: "Password",
-                      isPass: true,
-                      icon: Icons.lock,
-                      textInputType: TextInputType.text,
-                    ),
-                    const SizedBox(height: 10),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const ForgotPasswordScreen(),
-                            ),
-                          );
+                      const SizedBox(height: 30),
+                      TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          labelText: 'Email',
+                          prefixIcon: const Icon(Icons.email),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                              .hasMatch(value)) {
+                            return 'Please enter a valid email';
+                          }
+                          return null;
                         },
-                        child: const Text(
-                          "Forgot Password?",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.blue,
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _passwordController,
+                        obscureText: !_isPasswordVisible,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          labelText: 'Password',
+                          prefixIcon: const Icon(Icons.lock),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isPasswordVisible = !_isPasswordVisible;
+                              });
+                            },
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          } else if (value.length < 6) {
+                            return 'Password must be at least 6 characters';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const ForgotPasswordScreen(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.blue,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 30),
-                    MyButtons(
-                      onTap: login,
-                      text: "Login",
-                    ),
-                  ],
+                      const SizedBox(height: 30),
+                      MyButtons(
+                        onTap: login,
+                        text: "Login",
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -140,7 +207,7 @@ class HomePage extends StatelessWidget {
       body: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Text("Welcome to Agape Mobility Ethiopia"),
             SizedBox(height: 20),
             Text("You are now logged in"),
