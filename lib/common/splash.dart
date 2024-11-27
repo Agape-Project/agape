@@ -1,5 +1,6 @@
 import 'package:agape/admin/home.dart';
 import 'package:agape/auth/screens/login_screen.dart';
+import 'package:agape/auth/screens/password_reset_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -22,7 +23,8 @@ class _SplashScreenState extends State<SplashScreen>
     // Navigate to AdminHome after 5 seconds
     Future.delayed(const Duration(seconds: 5), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        MaterialPageRoute(builder: (_) => const LoginScreen()
+    ),
       );
     });
   }
