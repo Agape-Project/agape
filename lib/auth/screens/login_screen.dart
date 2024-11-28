@@ -1,3 +1,4 @@
+import 'package:agape/admin/screens/statics_screens.dart';
 import 'package:agape/auth/controllers/auth_controller.dart';
 import 'package:agape/auth/screens/forgot_password.dart';
 import 'package:agape/widgets/button.dart';
@@ -29,7 +30,7 @@ void login() async {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const HomePage(),
+          builder: (context) => DashboardStats(),
         ),
       );
     } catch (e) {
@@ -120,31 +121,6 @@ void login() async {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Home Page"),
-        centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-      ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text("Welcome to Agape Mobility Ethiopia"),
-            SizedBox(height: 20),
-            Text("You are now logged in"),
-          ],
         ),
       ),
     );
