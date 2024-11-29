@@ -61,7 +61,7 @@ class DashboardStats extends StatelessWidget {
                   const SizedBox(height: 16),
                   ChartSection(
                     title: "Gender Distribution",
-                    chartWidget: PieChartWidget(),
+                    chartWidget: PieChartWidget1(),
                   ),
                   ChartSection(
                     title: "Size Distribution",
@@ -69,7 +69,7 @@ class DashboardStats extends StatelessWidget {
                   ),
                  ChartSection(
                     title: "Approval Status",
-                    chartWidget: PieChartWidget(),
+                    chartWidget: PieChartWidget2(),
                   ),
                 ],
               ),
@@ -179,7 +179,7 @@ class ChartSection extends StatelessWidget {
   }
 }
 
-class PieChartWidget extends StatelessWidget {
+class PieChartWidget1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PieChart(
@@ -205,6 +205,31 @@ class PieChartWidget extends StatelessWidget {
   }
 }
 
+class PieChartWidget2 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return PieChart(
+      PieChartData(
+        sections: [
+          PieChartSectionData(
+            color: pieThree,
+            value: 56,
+            title: "56%",
+            radius: 50,
+            titleStyle: const TextStyle(color: Colors.white, fontSize: 12),
+          ),
+          PieChartSectionData(
+            color: pieFour,
+            value: 44,
+            title: "44%",
+            radius: 50,
+            titleStyle: const TextStyle(color: Colors.white, fontSize: 12),
+          ),
+        ],
+      ),
+    );
+  }
+}
 class BarChartWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
