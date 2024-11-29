@@ -41,21 +41,20 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
       _formKey.currentState!.save();
       final newPassword = _newPasswordController.text.trim();
       final confirmPassword = _confirmPasswordController.text.trim();
+      try {
+        final authController = ref.read(authControllerProvider);
 
-      final authController = ref.read(authControllerProvider);
+        final response = await authController.setNewPassword(
+            widget.email, newPassword, confirmPassword);
 
-      await authController.setNewPassword(widget.email, newPassword, confirmPassword);
-             // Show error snackbar
-        showCustomSnackBar(
-          context,
-          title: 'Success',
-          message: ' password changed successfully',
-          type: AnimatedSnackBarType.success,
-        );
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()));
-    } else {
-
+        showSnackBar(context, response);
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()));
+      } catch (e) {
+        showSnackBar(context, e.toString());
+      }
+       } else {
+      showSnackBar(context, "Please enter your new password");
     }
   }
 
