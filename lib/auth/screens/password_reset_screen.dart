@@ -1,6 +1,8 @@
 import 'package:agape/auth/controllers/auth_controller.dart';
 import 'package:agape/auth/screens/login_screen.dart';
+import 'package:agape/widgets/button.dart';
 import 'package:agape/widgets/snackbar.dart';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -43,19 +45,26 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
       final authController = ref.read(authControllerProvider);
 
       await authController.setNewPassword(widget.email, newPassword, confirmPassword);
-
+             // Show error snackbar
+        showCustomSnackBar(
+          context,
+          title: 'Success',
+          message: ' password changed successfully',
+          type: AnimatedSnackBarType.success,
+        );
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const LoginScreen()));
     } else {
-      showSnackBar(context, "Please enter your new password");
+
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 248, 244, 244),
       appBar: AppBar(
-        title: Text("Password Reset"),
+        title: const Text("Password Reset"),
         centerTitle: true,
       ),
       body: LayoutBuilder(
@@ -71,6 +80,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                 child: Form(
                   key: _formKey,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       // New Password
                       TextFormField(
@@ -140,16 +150,20 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                       SizedBox(height: 32.0),
 
                       // Submit Button
-                      ElevatedButton(
-                        onPressed: _submitForm,
-                        child: Text("Submit"),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 9, 19, 58),
-                          foregroundColor: Colors.white,
-                          minimumSize: const Size(double.infinity, 50),
-                          textStyle: const TextStyle(fontSize: 18),
-                        ),
-                      ),
+                       MyButtons(
+                onTap: _submitForm,
+                text: "Submit",
+              ),
+                      // ElevatedButton(
+                      //   onPressed: _submitForm,
+                      //   child: Text("Submit"),
+                      //   style: ElevatedButton.styleFrom(
+                      //     backgroundColor: const Color.fromARGB(255, 9, 19, 58),
+                      //     foregroundColor: Colors.white,
+                      //     minimumSize: const Size(double.infinity, 50),
+                      //     textStyle: const TextStyle(fontSize: 18),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),

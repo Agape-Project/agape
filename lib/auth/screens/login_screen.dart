@@ -1,5 +1,7 @@
 import 'package:agape/auth/controllers/auth_controller.dart';
 import 'package:agape/auth/screens/forgot_password.dart';
+import 'package:agape/widgets/CustomPasswordField.dart';
+import 'package:agape/widgets/CustomTextFormField.dart';
 import 'package:agape/widgets/button.dart';
 import 'package:agape/widgets/loading_animation_widget.dart';
 import 'package:agape/widgets/snackbar.dart';
@@ -7,13 +9,14 @@ import 'package:agape/widgets/text_field.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
+
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
+
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
@@ -67,6 +70,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           message: 'Invalid email or password',
           type: AnimatedSnackBarType.error,
         );
+       
       }
     }
   }
@@ -75,7 +79,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(255, 248, 244, 244),
       body: SafeArea(
         child: Stack(
           children: [
@@ -106,16 +110,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                           ),
                           const SizedBox(height: 30),
-                          TextFormField(
+                          CustomTextFormField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              labelText: 'Email',
-                              prefixIcon: const Icon(Icons.email),
-                            ),
+                            labelText: 'Email',
+                            prefixIcon: Icons.email,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter your email';
@@ -127,29 +126,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             },
                           ),
                           const SizedBox(height: 20),
-                          TextFormField(
+                          CustomPasswordField(
                             controller: _passwordController,
-                            obscureText: !_isPasswordVisible,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              labelText: 'Password',
-                              prefixIcon: const Icon(Icons.lock),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _isPasswordVisible
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _isPasswordVisible =
-                                        !_isPasswordVisible;
-                                  });
-                                },
-                              ),
-                            ),
+                            labelText: "Password",
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter your password';
@@ -176,7 +155,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 "Forgot Password?",
                                 style: TextStyle(
                                   fontSize: 16,
-                                  color: Colors.blue,
+                                  color: Color.fromARGB(255, 9, 19, 58),
                                 ),
                               ),
                             ),
