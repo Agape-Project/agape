@@ -22,8 +22,4 @@ class LoadingIndicatorWidget extends StatelessWidget {
   }
 
 
-// enum LoadingAnimationWidgetType {
-//   prograssiveDots,
-//   staggeredDotsWave,
-//   threeArchedCircle,
-// }
+

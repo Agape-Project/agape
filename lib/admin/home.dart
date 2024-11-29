@@ -1,4 +1,5 @@
 import 'package:agape/auth/screens/login_screen.dart';
+import 'package:agape/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class AdminHome extends StatefulWidget {
@@ -12,9 +13,10 @@ class _AdminHomeState extends State<AdminHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-
-      // ),
+      backgroundColor: secondaryColor,
+      appBar: AppBar(
+backgroundColor: secondaryColor,
+      ),
       body: SafeArea(
         child: Center(
         child: ConstrainedBox(
@@ -44,8 +46,9 @@ class _AdminHomeState extends State<AdminHome> {
                   (
                     child: Container(
                     height: 100,
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 255, 253, 252),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 255, 253, 252),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child:const Column(
                       children: [
@@ -56,14 +59,14 @@ class _AdminHomeState extends State<AdminHome> {
                       Icon(
                         Icons.person,
                         size: 60,
-                        color: Color.fromARGB(255, 0, 0, 0),
+                        color:iconsColor,
                       ),SizedBox(height: 5,),
                       Text(
                         '7855', 
                         style: TextStyle( 
                           fontSize: 40.0, 
                           fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 0, 0, 0), 
+                          color:Colors.green, 
                         ),
                       ),
                       SizedBox(height: 5),
@@ -89,8 +92,9 @@ class _AdminHomeState extends State<AdminHome> {
                   (  
                     child: Container(
                     height: 100,
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 255, 253, 252),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 255, 253, 252),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child:const Column(
                       children: [
@@ -101,14 +105,14 @@ class _AdminHomeState extends State<AdminHome> {
                       Icon(
                         Icons.wheelchair_pickup_sharp,
                         size: 60,
-                        color: Color.fromARGB(255, 0, 0, 0),
+                       color:iconsColor,
                       ),SizedBox(height: 5,),
                       Text(
                         '7855', 
                         style: TextStyle( 
                           fontSize: 40.0, 
                           fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 0, 0, 0), 
+                         color:Colors.green,
                         ),
                       ),
                       SizedBox(height: 5),
@@ -140,14 +144,15 @@ class _AdminHomeState extends State<AdminHome> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const LoginScreen()), // Replace with your page
+                    MaterialPageRoute(builder: (context) => const LoginScreen()), 
                   );
                 },
                  child: Container(
                   height: 150,
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 255, 253, 252),
-                    boxShadow:  [
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 255, 253, 252),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow:  const [
                   BoxShadow(
                     color: Colors.black12,
                     blurRadius: 6,
@@ -160,14 +165,14 @@ class _AdminHomeState extends State<AdminHome> {
                       Icon(
                         Icons.person_add,
                         size: 90,
-                        color: Color.fromARGB(255, 0, 0, 0),
+                        color:iconsColor,
                       ),SizedBox(height: 5,),
                       Text(
                         'Register', 
                         style: TextStyle( 
                           fontSize: 20.0, 
-                          // fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 0, 0, 0), 
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 156, 151, 151), 
                         ),
                       ),
                     ],
@@ -182,14 +187,15 @@ class _AdminHomeState extends State<AdminHome> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const LoginScreen()), // Replace with your page
+                    MaterialPageRoute(builder: (context) => const LoginScreen()),
                   );
                 },
                  child: Container(
                   height: 150,
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 255, 253, 252),
-                    boxShadow:  [
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow:  const [
                   BoxShadow(
                     color: Colors.black12,
                     blurRadius: 6,
@@ -202,14 +208,14 @@ class _AdminHomeState extends State<AdminHome> {
                       Icon(
                         Icons.list,
                         size: 90,
-                        color: Color.fromARGB(255, 0, 0, 0),
+                        color:iconsColor,
                       ),SizedBox(height: 5,),
                       Text(
                         'Recipient List', 
                         style: TextStyle( 
                           fontSize: 20.0, 
-                          // fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 0, 0, 0), 
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 156, 151, 151), 
                         ),
                       ),
                     ],

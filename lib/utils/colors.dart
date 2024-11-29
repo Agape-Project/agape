@@ -11,3 +11,4 @@ const pieOne = Color(0xFFF105AE);
 const pieTwo = Color(0xFF0050FF);
 const pieThree = Color(0xFF05F138);
 const pieFour = Color(0xFF547FDD);
+const iconsColor = Color(0xFF253369);
