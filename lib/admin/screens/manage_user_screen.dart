@@ -1,4 +1,5 @@
 import 'package:agape/admin/screens/form_screen.dart';
+import 'package:agape/admin/screens/subadmin_details.dart';
 import 'package:agape/utils/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +13,7 @@ class ManageSubAdmin extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
+            Navigator.pop(context);
           },
         ),
       ),
@@ -37,7 +39,7 @@ class ManageSubAdmin extends StatelessWidget {
                 child: ListView.builder(
                   itemCount: 10,
                   itemBuilder: (context, index) {
-                    return _buildUserCard();
+                    return _buildUserCard(context);
                   },
                 ),
               ),
@@ -59,7 +61,7 @@ class ManageSubAdmin extends StatelessWidget {
     );
   }
 
-  Widget _buildUserCard() {
+  Widget _buildUserCard(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: Colors.white,
@@ -96,7 +98,10 @@ class ManageSubAdmin extends StatelessWidget {
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () {
-                    // View button functionality
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => SubadminDetails()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.grey[300], 
