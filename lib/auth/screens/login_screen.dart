@@ -36,8 +36,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final password = _passwordController.text.trim();
 
       try {
-        final response =
-            await ref.read(authControllerProvider).login(email, password);
+  
+      await ref.read(authControllerProvider).login(email, password);
 
         // Hide loading animation
         setState(() {
@@ -55,7 +55,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const HomePage(),
+            builder: (context) =>  DashboardStats(),
           ),
         );
       } catch (e) {
@@ -187,22 +187,3 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Welcome to Agape Mobility Ethiopia"),
-            SizedBox(height: 20),
-            Text("You are now logged in"),
-          ],
-        ),
-      ),
-    );
-  }
-}

@@ -1,3 +1,4 @@
+import 'package:agape/auth/screens/password_reset_screen.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -104,12 +105,11 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                       onPressed: () {
-                        // Handle password reset
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => ResetPasswordPage()),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ResetPasswordPage(email: '',)),
+                        );
                       },
                       child: const Padding(
                         padding: EdgeInsets.symmetric(vertical: 6),

@@ -25,7 +25,7 @@ class SettingScreen extends StatelessWidget {
                   _buildSettingCard(
                     title: 'Manage Role',
                     onTap: () {
-                     Navigator.pushReplacement(
+                     Navigator.push(
                        context,
                        MaterialPageRoute(builder: (context) => ManageSubAdmin()),
                      );
@@ -34,7 +34,7 @@ class SettingScreen extends StatelessWidget {
                   _buildSettingCard(
                     title: 'Profile Management',
                     onTap: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => ProfileScreen()),
                       );
