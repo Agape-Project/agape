@@ -16,11 +16,13 @@ void showCustomSnackBar(
   required String message,
   required AnimatedSnackBarType type,
   Brightness brightness = Brightness.light,
+  Duration duration = const Duration(seconds: 3),
 }) {
   AnimatedSnackBar.rectangle(
     title,
     message,
     type: type,
     brightness: brightness,
+    duration: duration,
   ).show(context);
 }
