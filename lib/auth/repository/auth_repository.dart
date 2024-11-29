@@ -1,20 +1,26 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final authRepositoryProvider = Provider((ref) => AuthRepository());
+
+final storage = FlutterSecureStorage();
 
 class AuthRepository {
   final String baseUrl = "https://agape-project.vercel.app";
 
   Future<String> registerUser(Map<String, dynamic> userData) async {
     final url = Uri.parse('$baseUrl/api/auth/register/');
+    final token = await storage.read(key: 'access_token');
     final response = await http.post(
       url,
-      headers: {"Content-Type": "application/json"},
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token != null ? "Bearer $token" : "",
+      },
       body: jsonEncode(userData),
     );
-
     if (response.statusCode == 201) {
       return "User registered successfully";
     } else {
@@ -35,18 +41,24 @@ class AuthRepository {
       try {
         final data = jsonDecode(response.body);
         if (data['data'] != null &&
-            (data['data']['refresh'] != null ||
-                data['data']['access'] != null)) {
+            (data['data']['access'] != null ||
+                data['data']['refresh'] != null)) {
+          // Write tokens to secure storage
+          await storage.write(
+              key: 'access_token', value: data['data']['access']);
+          await storage.write(
+              key: 'refresh_token', value: data['data']['refresh']);
+
           return "Login successful";
         } else {
           throw Exception(data['detail'] ?? 'Invalid email or password');
         }
       } catch (e) {
-        throw Exception('Invalid JSON response from server');
+        throw Exception('Invalid JSON response from server: $e');
       }
     } else {
       throw Exception(
-          jsonDecode(response.body)['detail'] ?? 'invalid credentials');
+          jsonDecode(response.body)['detail'] ?? 'Invalid credentials');
     }
   }
 
@@ -68,51 +80,55 @@ class AuthRepository {
 
   Future<String> verifyOTP(Map<String, dynamic> userData) async {
     final url = Uri.parse('$baseUrl/api/auth/verify-otp/');
-    try {
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(userData),
-      );
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        if (data['status'] == 'success') {
-          return data['message'];
-        } else {
-          return "OTP verification failed";
-        }
-      } else if (response.statusCode == 400) {
-        final data = jsonDecode(response.body);
-        return data['detail'] ?? "Bad request, please try again";
-      } else if (response.statusCode == 404) {
-        return "OTP verification endpoint not found";
-      } else {
-        final data = jsonDecode(response.body);
-        return data['detail'] ?? "Error verifying OTP";
-      }
-    } catch (e) {
-      return "Failed to verify OTP. Please check your internet connection.";
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(userData),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['message'] ?? "OTP verification successful";
+    } else {
+      throw Exception(
+          jsonDecode(response.body)['detail'] ?? "Error verifying OTP");
     }
   }
 
   Future<String> setNewPassword(Map<String, dynamic> userData) async {
     final url = Uri.parse('$baseUrl/api/auth/set-new-password/');
-    try {
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(userData),
-      );
-      print(response.body);
-      
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data['message'] ?? "Password successfully updated";
-      } else {
-        return "Failed to set new password: ${response.reasonPhrase}";
-      }
-    } catch (e) {
-      return "An error occurred: $e";
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(userData),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['message'] ?? "Password successfully updated";
+    } else {
+      throw Exception("Failed to set new password: ${response.reasonPhrase}");
+    }
+  }
+
+  Future<String> logoutUser() async {
+    final url = Uri.parse('$baseUrl/api/auth/logout/');
+    final token = await storage.read(key: 'access_token');
+    final response = await http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token != null ? "Bearer $token" : "",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      await storage.delete(key: 'access_token');
+      await storage.delete(key: 'refresh_token');
+      return "Logout successful";
+    } else {
+      throw Exception(
+          jsonDecode(response.body)['detail'] ?? 'Error logging out');
     }
   }
 }

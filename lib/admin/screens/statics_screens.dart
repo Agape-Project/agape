@@ -77,7 +77,16 @@ class DashboardStats extends StatelessWidget {
           );
         },
       ),
-
+      bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.deepPurple,
+        unselectedItemColor: Colors.grey,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: "List"),
+          BottomNavigationBarItem(icon: Icon(Icons.file_download), label: "Export"),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"),
+        ],
+      ),
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:agape/auth/repository/auth_repository.dart';
 
 class AuthController {
+
   final AuthRepository authRepository;
 
   AuthController(this.authRepository);
@@ -19,9 +20,17 @@ class AuthController {
     }
   }
 
-  Future<String> register(Map<String, dynamic> userData) async {
+  Future<String> register(String firstName, String middleName, String lastName, String email, String phone, String? gender, String? role) async {
     try {
-      final response = await authRepository.registerUser(userData);
+      final response = await authRepository.registerUser({
+        "first_name": firstName,
+        "middle_name": middleName,
+        "last_name": lastName,
+        "email": email,
+        "phone_number": phone,
+        "gender": gender,
+        "role": role ?? "field_worker",
+      });
       return response;
     } catch (e) {
       rethrow;
@@ -61,6 +70,14 @@ class AuthController {
             "password2": password2
         });
       return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      await authRepository.logoutUser();
     } catch (e) {
       rethrow;
     }

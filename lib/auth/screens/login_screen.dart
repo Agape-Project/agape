@@ -1,3 +1,4 @@
+import 'package:agape/admin/screens/form_screen.dart';
 import 'package:agape/admin/screens/statics_screens.dart';
 import 'package:agape/auth/controllers/auth_controller.dart';
 import 'package:agape/auth/screens/forgot_password.dart';
@@ -55,7 +56,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) =>  DashboardStats(),
+            builder: (context) =>  SubAdminForm(),
           ),
         );
       } catch (e) {

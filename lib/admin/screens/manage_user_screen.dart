@@ -51,7 +51,7 @@ class ManageSubAdmin extends StatelessWidget {
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
         onPressed: () {
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => SubAdminForm()),
           );
@@ -63,7 +63,7 @@ class ManageSubAdmin extends StatelessWidget {
 
   Widget _buildUserCard(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
@@ -98,7 +98,7 @@ class ManageSubAdmin extends StatelessWidget {
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => SubadminDetails()),
                     );
