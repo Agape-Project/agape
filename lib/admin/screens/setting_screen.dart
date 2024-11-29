@@ -1,11 +1,13 @@
 import 'package:agape/admin/screens/manage_user_screen.dart';
 import 'package:agape/admin/screens/profile_screen.dart';
+import 'package:agape/auth/controllers/auth_controller.dart';
 import 'package:agape/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SettingScreen extends StatelessWidget {
+class SettingScreen extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Settings'),
@@ -43,7 +45,7 @@ class SettingScreen extends StatelessWidget {
                   _buildSettingCard(
                     title: 'Logout',
                     onTap: () {
-                      // Add logout functionality
+                      ref.read(authControllerProvider).logout();
                     },
                   ),
                 ],
