@@ -1,19 +1,44 @@
+import 'package:agape/auth/controllers/auth_controller.dart';
 import 'package:agape/widgets/button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SubAdminForm extends StatefulWidget {
+class SubAdminForm extends ConsumerStatefulWidget {
   @override
   _SubAdminFormState createState() => _SubAdminFormState();
 }
 
-class _SubAdminFormState extends State<SubAdminForm> {
+class _SubAdminFormState extends ConsumerState<SubAdminForm> {
   final _formKey = GlobalKey<FormState>();
-  String? _selectedGender; // Tracks selected gender
+  final _firstName = TextEditingController();
+  final _middeleName = TextEditingController();
+  final _lastName = TextEditingController();
+  final _email = TextEditingController();
+  final _phone = TextEditingController();
+
+  String? _selectedGender;
+
+  @override
+  void dispose() {
+    _firstName.dispose();
+    _middeleName.dispose();
+    _lastName.dispose();
+    _email.dispose();
+    _phone.dispose();
+    super.dispose();
+  }
 
   void register() {
-    if (_formKey.currentState!.validate()) {
-      // Add registration functionality here
-    }
+    // if (_formKey.currentState!.validate()) {
+    //   ref.read(authControllerProvider).register(
+    //         "firstName": _firstName.text,
+    //        "middleName": _middeleName.text,
+    //         "lastName": _lastName.text,
+    //        "email": _email.text,
+    //         "phone": _phone.text,
+    //         "gender": _selectedGender,
+    //       );
+    // }
   }
 
   @override
@@ -25,13 +50,14 @@ class _SubAdminFormState extends State<SubAdminForm> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
+            Navigator.pop(context);
           },
         ),
       ),
       body: Center(
         child: SingleChildScrollView(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 400), 
+            constraints: const BoxConstraints(maxWidth: 400),
             child: Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -52,6 +78,7 @@ class _SubAdminFormState extends State<SubAdminForm> {
                   children: [
                     // First Name
                     _buildTextFormField(
+                      controller: _firstName,
                       label: "First name",
                       hintText: "Abebe",
                       icon: Icons.person,
@@ -64,7 +91,9 @@ class _SubAdminFormState extends State<SubAdminForm> {
                     ),
                     const SizedBox(height: 16),
 
+                    // Middle Name
                     _buildTextFormField(
+                      controller: _middeleName,
                       label: "Middle name",
                       hintText: "Kebede",
                       icon: Icons.person,
@@ -79,6 +108,7 @@ class _SubAdminFormState extends State<SubAdminForm> {
 
                     // Last Name
                     _buildTextFormField(
+                      controller: _lastName,
                       label: "Last name",
                       hintText: "Abebe",
                       icon: Icons.person,
@@ -91,6 +121,7 @@ class _SubAdminFormState extends State<SubAdminForm> {
                     ),
                     const SizedBox(height: 16),
 
+                    // Gender
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -137,6 +168,7 @@ class _SubAdminFormState extends State<SubAdminForm> {
 
                     // Phone Number
                     _buildTextFormField(
+                      controller: _phone,
                       label: "Phone",
                       hintText: "0912141236",
                       icon: Icons.phone,
@@ -152,6 +184,7 @@ class _SubAdminFormState extends State<SubAdminForm> {
 
                     // Email
                     _buildTextFormField(
+                      controller: _email,
                       label: "Email",
                       hintText: "example@gmail.com",
                       icon: Icons.email,
@@ -168,7 +201,6 @@ class _SubAdminFormState extends State<SubAdminForm> {
                     ),
                     const SizedBox(height: 32),
 
-                    // Submit Button
                     MyButtons(onTap: register, text: "Submit"),
                   ],
                 ),
@@ -181,6 +213,7 @@ class _SubAdminFormState extends State<SubAdminForm> {
   }
 
   Widget _buildTextFormField({
+    required TextEditingController controller,
     required String label,
     required String hintText,
     required IconData icon,
@@ -192,10 +225,11 @@ class _SubAdminFormState extends State<SubAdminForm> {
       children: [
         Text(
           label,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 8),
         TextFormField(
+          controller: controller,
           keyboardType: keyboardType,
           validator: validator,
           decoration: InputDecoration(
