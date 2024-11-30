@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:agape/auth/screens/a.dart';
 import 'package:agape/widgets/CustomTextFormField.dart';
 import 'package:agape/widgets/button.dart';
 import 'package:agape/widgets/date_picker.dart';
@@ -9,14 +7,14 @@ import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class CustomStepper extends StatefulWidget {
-  const CustomStepper({Key? key}) : super(key: key);
+class RegisterRecord extends StatefulWidget {
+  const RegisterRecord({Key? key}) : super(key: key);
 
   @override
-  State<CustomStepper> createState() => _CustomStepperState();
+  State<RegisterRecord> createState() => _CustomStepperState();
 }
 
-class _CustomStepperState extends State<CustomStepper> {
+class _CustomStepperState extends State<RegisterRecord> {
   int _currentStep = 0;
     final _formKey1 = GlobalKey<FormState>();  
   final _formKey2 = GlobalKey<FormState>(); 
@@ -110,7 +108,7 @@ showCustomSnackBar(
       _firstNameController.clear();
       _middleNameController.clear();
       _lastNameController.clear();
-        
+
 
       _warantfirstNameController.clear();
       _warantmiddleNameController.clear();
