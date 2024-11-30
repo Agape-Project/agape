@@ -2,7 +2,10 @@ import 'dart:io';
 
 import 'package:agape/auth/screens/a.dart';
 import 'package:agape/widgets/CustomTextFormField.dart';
+import 'package:agape/widgets/button.dart';
 import 'package:agape/widgets/date_picker.dart';
+import 'package:agape/widgets/snackbar.dart';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -19,9 +22,13 @@ class _CustomStepperState extends State<CustomStepper> {
   final _formKey2 = GlobalKey<FormState>(); 
     final _formKey3 = GlobalKey<FormState>(); 
      final _formKey4 = GlobalKey<FormState>(); 
+      final _formKey5 = GlobalKey<FormState>(); 
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _middleNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
+   final TextEditingController _warantfirstNameController = TextEditingController();
+  final TextEditingController _warantmiddleNameController = TextEditingController();
+  final TextEditingController _warantlastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _zoneController = TextEditingController();
@@ -87,10 +94,40 @@ Future<void> _simulateUpload(bool isPhoto) async {
     });
   }
 }
+// Function to handle form submission
+void _submitData() {
+  if (_formKey5.currentState?.validate() ?? false) {
+    //  submission logic here (e.g., saving data, uploading photos, etc.)
+showCustomSnackBar(
+  context, 
+  title: 'Success', 
+  message: 'Data submitted successfully',
+   type: AnimatedSnackBarType.success
+   );
+    setState(() {
+      _currentStep = 0;  
+
+      _firstNameController.clear();
+      _middleNameController.clear();
+      _lastNameController.clear();
+        
+
+      _warantfirstNameController.clear();
+      _warantmiddleNameController.clear();
+      _warantlastNameController.clear();
+      _phoneController.clear();
+      _dateController.clear();
+      _selectedGender = null;  
+      _photoFile = null; 
+    });
+  }
+}
+
+
 
 //
   List<Step> stepList() => [
-    //step 1
+    // step 1
         Step(
           title: const Text(""),
           isActive: _currentStep >= 0,
@@ -347,7 +384,7 @@ DatePicker(
                     return null;
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
               ],
             ),
           ),
@@ -376,19 +413,6 @@ DatePicker(
                 return null;
               },
             ),
-            // const Text("Hip Width"),
-            // CustomTextFormField(
-            //   controller: _hipWidthController,
-            //   keyboardType: TextInputType.number,
-            //   labelText: 'Hip Width',
-            //   prefixIcon: Icons.straighten,
-            //   validator: (value) {
-            //     if (value == null || value.isEmpty) {
-            //       return 'Please enter hip width';
-            //     }
-            //     return null;
-            //   },
-            // ),
            const SizedBox(height: 10),
             CustomTextFormField(
              controller: _backrestHeightController,
@@ -499,7 +523,7 @@ DropdownButtonFormField<String>(
                 },
                 decoration: const InputDecoration(
                   hintText: "Select Cause",
-                   labelText: 'Equipment Type',
+                   labelText: 'Cause',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) =>
@@ -706,7 +730,180 @@ DropdownButtonFormField<String>(
   ),
 ),
 
+//step 5
 
+    Step(
+          title: const Text(""),
+          isActive: _currentStep >= 4,
+          state: _currentStep == 4 ? StepState.editing : StepState.complete,
+          content: Form(
+            key: _formKey5,
+            child: Column(
+              children: [
+                const Text("Warant Information", style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
+                  CustomTextFormField(
+                  controller: _warantfirstNameController,
+                  labelText: 'First Name',
+                  keyboardType: TextInputType.text,
+                  prefixIcon: Icons.person,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your first name';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 10),
+                CustomTextFormField(
+                  controller: _warantmiddleNameController,
+                  labelText: 'MIddle Name',
+                  keyboardType: TextInputType.text,
+                  prefixIcon: Icons.person,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your middle name';
+                    }
+                    return null;
+                  },
+                  
+                ),
+                const SizedBox(height: 10),
+                CustomTextFormField(
+                  controller: _warantlastNameController,
+                  labelText: 'Last Name',
+                  keyboardType: TextInputType.text,
+                  prefixIcon: Icons.person,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your last name';
+                    }
+                    return null;
+                  },
+                  
+                ),
+                const SizedBox(height: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Gender: "),
+                    Row(
+                      children: [
+                        Expanded(
+                      child: RadioListTile<String>(
+                        title: const Text("Male"),
+                        value: "Male",
+                        groupValue: _selectedGender,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedGender = value;
+                          });
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: RadioListTile<String>(
+                        title: const Text("Female"),
+                        value: "Female",
+                        groupValue: _selectedGender,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedGender = value;
+                          });
+                        },
+                      ),
+                    ),
+                    
+                      ],
+                    )
+                  ],
+                ),
+                const SizedBox(height: 10),
+                            DatePicker(
+              controller: _dateController,
+              labelText: 'Date of birth',
+              prefixIcon: Icons.calendar_today,
+              
+              readOnly: true,
+              onTap: () async {
+                DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(1900),
+                  lastDate: DateTime.now(),
+                );
+                if (pickedDate != null) {
+                  _dateController.text =
+                      "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+                }
+              },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please select your date of birth';
+                }
+                return null;
+              },
+              
+    ),SizedBox(height: 10),
+                  CustomTextFormField(
+                  controller: _phoneController,
+                  labelText: 'Phone Number',
+                   keyboardType: TextInputType.number,
+                  prefixIcon: Icons.phone,
+                  // keyboardType: TextInputType.phone,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your phone number';
+                    } else if (value.length >10 || value.length < 10) {
+                      return 'Phone mumber must be 10 digits';
+                    } else if 
+                    (!RegExp(r'^(09|07)[0-9]{8}$').hasMatch(value)) {
+                      return 'Please start  with 09 or 07 ';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 5),
+               const Text(" ID Photo", style: TextStyle(fontWeight: FontWeight.bold)),
+               
+          const SizedBox(height: 10),
+          GestureDetector(
+            onTap: () => _pickImage(true),
+            child: Container(
+              height: 150,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: _photoFile == null
+                    ? const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.cloud_upload_outlined, size: 50),
+                          SizedBox(height: 8),
+                          Text("Select File"),
+                        ],
+                      )
+                    : Image.file(_photoFile!, fit: BoxFit.cover),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          LinearProgressIndicator(
+            value: _photoUploadProgress,
+            backgroundColor: Colors.grey[300],
+            valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+          ),
+
+          const SizedBox(height: 20),
+              MyButtons(
+                            onTap: _submitData,
+                            text: "Register",
+                          ),
+    ]
+    )
+    )
+    )
         // Add additional steps as required...
       ];
 
@@ -714,7 +911,7 @@ DropdownButtonFormField<String>(
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Register"),
+        title: const Text("Register"),
         centerTitle: true,
         
       ),
@@ -763,13 +960,13 @@ DropdownButtonFormField<String>(
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      if (_currentStep > 0)
+                      if (_currentStep > 0 && _currentStep < stepList().length - 1)
                       TextButton(
                         onPressed: details.onStepCancel,
                              style: TextButton.styleFrom(
                             backgroundColor: Colors.white,
-                              minimumSize: Size(100, 40), // Button background color
-                            foregroundColor: Color.fromRGBO(9, 19, 58, 1), // Text color (blue-black)
+                              minimumSize: const Size(100, 40), // Button background color
+                            foregroundColor: const Color.fromRGBO(9, 19, 58, 1), // Text color (blue-black)
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8), // Slightly curved edges
                               side: const BorderSide(color: Color.fromRGBO(9, 19, 58, 1), width: 1.5), // Border color and width
@@ -777,21 +974,10 @@ DropdownButtonFormField<String>(
                                 ),
                         child: const Text("Back"),
                       ),
-                        // ElevatedButton(
-                        //   onPressed: details.onStepCancel,
-                        //   child: const Text("Back"),
-                        // ),               
-                          
-          
-                      // ElevatedButton(
-                      //   onPressed: details.onStepContinue,
-                      //   child: const Text("Next"),
-                      // ),
-          
-                      
                          Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                            children: [
+                             if (_currentStep < stepList().length - 1) 
                              ElevatedButton(
                                 onPressed: details.onStepContinue,
                                  style: ElevatedButton.styleFrom(
@@ -802,8 +988,8 @@ DropdownButtonFormField<String>(
                                     borderRadius: BorderRadius.circular(8), // Slightly curved edges
                                   ),
                                 ),
-                                                   child: const Text("NEXT"),
-                                                 ),
+                                child: const Text("NEXT"),
+                              ),
                            ],
                          ),
           
@@ -845,46 +1031,14 @@ DropdownButtonFormField<String>(
       return _formKey2.currentState?.validate() ?? false;
       case 2:
       return _formKey3.currentState?.validate() ?? false;
+    case 3:
+      return _formKey4.currentState?.validate() ?? false;
+       case 4:
+      return _formKey5.currentState?.validate() ?? false;
+      
     default:
       return false;
   }
 }
 
 }
-
-// class CustomTextFormField extends StatelessWidget {
-//   final TextEditingController controller;
-//   final String labelText;
-//   final IconData prefixIcon;
-//   final TextInputType? keyboardType;
-//   final bool readOnly;
-//   final VoidCallback? onTap;
-//   final String? Function(String?)? validator;
-
-//   const CustomTextFormField({
-//     Key? key,
-//     required this.controller,
-//     required this.labelText,
-//     required this.prefixIcon,
-//     this.keyboardType,
-//     this.readOnly = false,
-//     this.onTap,
-//     this.validator,
-//   }) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return TextFormField(
-//       controller: controller,
-//       keyboardType: keyboardType,
-//       readOnly: readOnly,
-//       onTap: onTap,
-//       decoration: InputDecoration(
-//         prefixIcon: Icon(prefixIcon),
-//         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-//         labelText: labelText,
-//       ),
-//       validator: validator,
-//     );
-//   }
-// }
