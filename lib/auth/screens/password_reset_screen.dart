@@ -53,7 +53,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
       } catch (e) {
         showSnackBar(context, e.toString());
       }
-       } else {
+    } else {
       showSnackBar(context, "Please enter your new password");
     }
   }
@@ -90,7 +90,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           labelText: "New Password",
-                          prefixIcon: Icon(Icons.lock),
+                          prefixIcon: const Icon(Icons.lock),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _newPasswordVisible
@@ -116,7 +116,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                         onSaved: (value) => _newPassword = value,
                       ),
 
-                      SizedBox(height: 16.0),
+                      const SizedBox(height: 16.0),
 
                       // Confirm New Password
                       TextFormField(
@@ -127,7 +127,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           labelText: "Confirm New Password",
-                          prefixIcon: Icon(Icons.lock),
+                          prefixIcon: const Icon(Icons.lock),
                           suffixIcon: IconButton(
                             icon: Icon(
                               _confirmPasswordVisible
@@ -146,23 +146,13 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                         onSaved: (value) => _confirmPassword = value,
                       ),
 
-                      SizedBox(height: 32.0),
+                      const SizedBox(height: 32.0),
 
                       // Submit Button
-                       MyButtons(
-                onTap: _submitForm,
-                text: "Submit",
-              ),
-                      // ElevatedButton(
-                      //   onPressed: _submitForm,
-                      //   child: Text("Submit"),
-                      //   style: ElevatedButton.styleFrom(
-                      //     backgroundColor: const Color.fromARGB(255, 9, 19, 58),
-                      //     foregroundColor: Colors.white,
-                      //     minimumSize: const Size(double.infinity, 50),
-                      //     textStyle: const TextStyle(fontSize: 18),
-                      //   ),
-                      // ),
+                      MyButtons(
+                        onTap: _submitForm,
+                        text: "Submit",
+                      ),
                     ],
                   ),
                 ),
