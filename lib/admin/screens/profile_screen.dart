@@ -55,7 +55,7 @@ class ProfileScreen extends StatelessWidget {
               color: Colors.black,
             ),
           ),
-          const SizedBox(height: 40), // Padding between name and buttons
+          const SizedBox(height: 40), 
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(
