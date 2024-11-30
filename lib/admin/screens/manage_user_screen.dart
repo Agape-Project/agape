@@ -1,11 +1,15 @@
 import 'package:agape/admin/screens/form_screen.dart';
 import 'package:agape/admin/screens/subadmin_details.dart';
+import 'package:agape/auth/controllers/auth_controller.dart';
 import 'package:agape/utils/colors.dart';
+import 'package:agape/widgets/loading_animation_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ManageSubAdmin extends StatelessWidget {
+class ManageSubAdmin extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authController = ref.read(authControllerProvider);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Manage Sub admin'),
@@ -36,10 +40,28 @@ class ManageSubAdmin extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: ListView.builder(
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return _buildUserCard(context);
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: authController.getUsers(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return LoadingIndicatorWidget();
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Error: ${snapshot.error}'),
+                      );
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Text('No users found'),
+                      );
+                    } else {
+                      final users = snapshot.data!;
+                      return ListView.builder(
+                        itemCount: users.length,
+                        itemBuilder: (context, index) {
+                          return _buildUserCard(context, users[index]);
+                        },
+                      );
+                    }
                   },
                 ),
               ),
@@ -61,7 +83,8 @@ class ManageSubAdmin extends StatelessWidget {
     );
   }
 
-  Widget _buildUserCard(BuildContext context) {
+  Widget _buildUserCard(BuildContext context,  Map<String, dynamic> user) {
+    String userId = user['id'];
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
       color: Colors.white,
@@ -74,10 +97,16 @@ class ManageSubAdmin extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              'Alem Alem',
+           Text(
+              "${user['first_name']} ${user['last_name']}",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
+            const SizedBox(width: 8),
+            Text(
+              user['role'],
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            ),
+            const SizedBox(width: 8),
             Row(
               children: [
                 ElevatedButton(
@@ -100,7 +129,7 @@ class ManageSubAdmin extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SubadminDetails()),
+                      MaterialPageRoute(builder: (context) => SubadminDetails(userId: userId)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
