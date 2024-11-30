@@ -45,19 +45,19 @@ class _AdminNavigationState extends ConsumerState<AdminNavigation> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.book),
+            icon: Icon(Icons.list),
             label: 'List',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.bar_chart),
             label: 'Report',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.message),
+            icon: Icon(Icons.file_download),
             label: 'Export',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.attach_money),
+            icon: Icon(Icons.settings),
             label: 'Setting',
           ),
         ],
