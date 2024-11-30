@@ -23,11 +23,16 @@ class _SubAdminFormState extends ConsumerState<SubAdminForm> {
   final _phone = TextEditingController();
 
   String? _selectedGender;
-  String? _selectedRole;
+  String? _selectedRole = "field_worker";
   bool _isLoading = false;
+  bool _genderError = false;
 
   void register() async {
-    if (_formKey.currentState!.validate()) {
+  setState(() {
+      _genderError = _selectedGender == null; 
+  });
+
+    if (_formKey.currentState!.validate() && !_genderError) {
       setState(() {
         _isLoading = true;
       });
@@ -178,6 +183,7 @@ class _SubAdminFormState extends ConsumerState<SubAdminForm> {
                                       onChanged: (value) {
                                         setState(() {
                                           _selectedGender = value;
+                                           _genderError = false;
                                         });
                                       },
                                     ),
@@ -193,6 +199,7 @@ class _SubAdminFormState extends ConsumerState<SubAdminForm> {
                                       onChanged: (value) {
                                         setState(() {
                                           _selectedGender = value;
+                                          _genderError = false;
                                         });
                                       },
                                     ),
@@ -201,6 +208,11 @@ class _SubAdminFormState extends ConsumerState<SubAdminForm> {
                                 ),
                               ],
                             ),
+                            if (_genderError) 
+                              const Text(
+                                'Please select a gender',
+                                style: TextStyle(color: Colors.red),
+                              ),
                           ],
                         ),
                         const SizedBox(height: 16),
@@ -266,7 +278,7 @@ class _SubAdminFormState extends ConsumerState<SubAdminForm> {
                                 Row(
                                   children: [
                                     Radio<String>(
-                                      value: "female",
+                                      value: "field_worker",
                                       groupValue: _selectedRole,
                                       onChanged: (value) {
                                         setState(() {
@@ -285,7 +297,6 @@ class _SubAdminFormState extends ConsumerState<SubAdminForm> {
 
                         MyButtons(onTap: register, text: "Submit"),
                       ],
-                      
                     ),
                   ),
                 ),
