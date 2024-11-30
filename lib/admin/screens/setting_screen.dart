@@ -1,6 +1,7 @@
 import 'package:agape/admin/screens/manage_user_screen.dart';
 import 'package:agape/admin/screens/profile_screen.dart';
 import 'package:agape/auth/controllers/auth_controller.dart';
+import 'package:agape/auth/screens/login_screen.dart';
 import 'package:agape/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,24 +14,26 @@ class SettingScreen extends ConsumerWidget {
         title: Text('Settings'),
         centerTitle: true,
       ),
-      backgroundColor: secondaryColor, 
+      backgroundColor: secondaryColor,
       body: Align(
-        alignment: Alignment.topCenter, 
+        alignment: Alignment.topCenter,
         child: SingleChildScrollView(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 600), 
+            constraints: const BoxConstraints(maxWidth: 600),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _buildSettingCard(
                     title: 'Manage Role',
                     onTap: () {
-                     Navigator.push(
-                       context,
-                       MaterialPageRoute(builder: (context) => ManageSubAdmin()),
-                     );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ManageSubAdmin()),
+                      );
                     },
                   ),
                   _buildSettingCard(
@@ -38,14 +41,20 @@ class SettingScreen extends ConsumerWidget {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ProfileScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => ProfileScreen()),
                       );
                     },
                   ),
                   _buildSettingCard(
                     title: 'Logout',
-                    onTap: () {
-                      ref.read(authControllerProvider).logout();
+                    onTap: () async {
+                      await ref.read(authControllerProvider).logout();
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                        (route) => false,
+                      );
                     },
                   ),
                 ],
@@ -57,7 +66,8 @@ class SettingScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSettingCard({required String title, required VoidCallback onTap}) {
+  Widget _buildSettingCard(
+      {required String title, required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Card(
