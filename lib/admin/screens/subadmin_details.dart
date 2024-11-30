@@ -1,8 +1,17 @@
+import 'package:agape/auth/controllers/auth_controller.dart';
+import 'package:agape/widgets/loading_animation_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SubadminDetails extends StatelessWidget {
+class SubadminDetails extends ConsumerWidget {
+  final String userId;
+
+  const SubadminDetails({Key? key, required this.userId}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authController = ref.read(authControllerProvider);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -19,111 +28,133 @@ class SubadminDetails extends StatelessWidget {
             style: TextStyle(color: Color.fromARGB(255, 255, 255, 255))),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
+      body: FutureBuilder<Map<String, dynamic>>(
+        future: authController.getUserById(userId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return LoadingIndicatorWidget();
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          } else if (!snapshot.hasData) {
+            return const Center(
+              child: Text('No user data found'),
+            );
+          }
+
+          final user = snapshot.data!;
+          return SingleChildScrollView(
+            child: Column(
               children: [
-                Container(
-                  height: 200,
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 9, 19, 58),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(40),
-                      bottomRight: Radius.circular(40),
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      height: 200,
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 9, 19, 58),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(40),
+                          bottomRight: Radius.circular(40),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 120,
+                      left: MediaQuery.of(context).size.width / 2 - 60,
+                      child: CircleAvatar(
+                        radius: 60,
+                        backgroundImage: NetworkImage(
+                          user['profile_image'] ??
+                              'https://via.placeholder.com/150',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 80),
+                Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 400),
+                    child: Column(
+                      children: [
+                        _buildDetailRow("Name",
+                            "${user['first_name']} ${user['last_name']}"),
+                        const SizedBox(height: 10),
+                        _buildDetailRow(
+                            "Gender", user['gender'] ?? "Not specified"),
+                        const SizedBox(height: 10),
+                        _buildDetailRow("Email", user['email']),
+                        const SizedBox(height: 10),
+                        _buildDetailRow(
+                            "Phone", user['phone'] ?? "Not specified"),
+                      ],
                     ),
                   ),
                 ),
-                Positioned(
-                  top: 120,
-                  left: MediaQuery.of(context).size.width / 2 - 60,
-                  child: const CircleAvatar(
-                    radius: 60,
-                    backgroundImage:
-                        NetworkImage('https://via.placeholder.com/150'),
+                const SizedBox(height: 40),
+                Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Edit button
+                      SizedBox(
+                        width: 120,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () {
+                            // Handle Edit Profile functionality
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              "Edit",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 64),
+                      SizedBox(
+                        width: 120,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () {
+                            // Handle Delete functionality
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              "Delete",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 80),
-            Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 400),
-                child: Column(
-                  children: [
-                    _buildDetailRow("Name", "Abebe HY"),
-                    const SizedBox(height: 10),
-                    _buildDetailRow("Gender", "Male"),
-                    const SizedBox(height: 10),
-                    _buildDetailRow("Email", "ahd@kkdl"),
-                    const SizedBox(height: 10),
-                    _buildDetailRow("Phone", "12345"),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 40),
-            Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Edit button
-                  SizedBox(
-                    width: 120,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () {
-                        // Handle Edit Profile functionality
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12),
-                        child: Text(
-                          "Edit",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 64),
-
-                  SizedBox(
-                    width: 120,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () {
-                        // Handle Delete functionality
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12),
-                        child: Text(
-                          "Delete",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
