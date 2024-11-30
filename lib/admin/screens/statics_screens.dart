@@ -60,16 +60,31 @@ class DashboardStats extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   ChartSection(
-                    title: "Gender Distribution",
-                    chartWidget: PieChartWidget1(),
-                  ),
+                      title: "Gender Distribution",
+                      chartWidget: PieChartWidget1(),
+                      legendItems: const [
+                        {'color': pieOne, 'label': 'Male', 'value': 56},
+                        {'color': pieTwo, 'label': 'Female', 'value': 44},
+                      ]),
                   ChartSection(
                     title: "Size Distribution",
                     chartWidget: BarChartWidget(),
+                    legendItems: const [
+                      {'color': Colors.blue, 'label': 'Pedatric Wheelchair', 'value': 10},
+                      {'color': Color.fromARGB(255, 2, 5, 2), 'label': 'American Wheelchair',  'value': 5},
+                      {'color': Colors.red, 'label': '(FWP) WheelChair', 'value': 15},
+                      {'color': Colors.orange, 'label': 'Walker', 'value': 12},
+                      {'color': Colors.purple, 'label': 'Crutches', 'value': 8},
+                      {'color': Colors.blueGrey, 'label': 'Cane', 'value': 9}
+                    ],
                   ),
-                 ChartSection(
+                  ChartSection(
                     title: "Approval Status",
                     chartWidget: PieChartWidget2(),
+                    legendItems: const [
+                      {'color': pieThree, 'label': 'Approved',  'value': 56},
+                      {'color': pieFour, 'label': 'Pending',  'value': 44},
+                    ],
                   ),
                 ],
               ),
@@ -113,7 +128,8 @@ class DashboardCard extends StatelessWidget {
             Flexible(
               child: Text(
                 count,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: color),
+                style: TextStyle(
+                    fontSize: 24, fontWeight: FontWeight.bold, color: color),
               ),
             ),
             const SizedBox(height: 4),
@@ -131,17 +147,57 @@ class DashboardCard extends StatelessWidget {
   }
 }
 
+class Legend extends StatelessWidget {
+  final List<Map<String, dynamic>> indicators;
+
+  const Legend({required this.indicators});
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: indicators.map((indicator) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 12,
+              height: 12,
+              color: indicator['color'],
+            ),
+            const SizedBox(width: 4),
+            Text(
+              indicator['label'],
+              style: const TextStyle(fontSize: 12),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              "(${indicator['value']}%)",
+              style: const TextStyle(fontSize: 12),
+            ),
+          ],
+        );
+      }).toList(),
+    );
+  }
+}
+
 class ChartSection extends StatelessWidget {
   final String title;
   final Widget chartWidget;
+  final List<Map<String, dynamic>> legendItems;
 
   const ChartSection({
     required this.title,
     required this.chartWidget,
+    required this.legendItems,
   });
 
   @override
   Widget build(BuildContext context) {
+    final isSmallScreen = MediaQuery.of(context).size.width < 600;
+
     return Card(
       elevation: 4,
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -158,10 +214,25 @@ class ChartSection extends StatelessWidget {
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            SizedBox(
-              height: 200,
-              child: chartWidget,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: isSmallScreen ? 1 : 3,
+                  child: SizedBox(height: 200, child: chartWidget),
+                ),
+                if (!isSmallScreen)
+                  const SizedBox(width: 16), // Spacing between chart and legend
+                if (!isSmallScreen)
+                  Expanded(
+                    flex: 1,
+                    child: Legend(indicators: legendItems),
+                  ),
+              ],
             ),
+            if (isSmallScreen)
+              const SizedBox(height: 16), // Spacing before the legend
+            if (isSmallScreen) Legend(indicators: legendItems),
           ],
         ),
       ),
@@ -220,6 +291,7 @@ class PieChartWidget2 extends StatelessWidget {
     );
   }
 }
+
 class BarChartWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -245,9 +317,10 @@ class BarChartWidget extends StatelessWidget {
                   leftTitles: AxisTitles(
                     axisNameWidget: const Text(
                       'Count',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                     ),
-                    axisNameSize: 20, 
+                    axisNameSize: 20,
                     sideTitles: SideTitles(
                       showTitles: true,
                       reservedSize: 40,
@@ -259,29 +332,33 @@ class BarChartWidget extends StatelessWidget {
                   ),
                   bottomTitles: AxisTitles(
                     axisNameWidget: const Text(
-                      'Wheelchair Types',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                      'Equipment Types',
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                     ),
-                    axisNameSize: 20, 
+                    axisNameSize: 20,
                     sideTitles: SideTitles(
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
                         switch (value.toInt()) {
                           case 1:
-                            return const Text('Children',
+                            return const Text("Pedatric",
                                 style: TextStyle(fontSize: 12));
                           case 2:
-                            return const Text('Small',
+                            return const Text("American",
                                 style: TextStyle(fontSize: 12));
                           case 3:
-                            return const Text('Medium',
+                            return const Text("FWP",
                                 style: TextStyle(fontSize: 12));
                           case 4:
-                            return const Text('Large',
+                            return const Text("Walker",
                                 style: TextStyle(fontSize: 12));
                           case 5:
-                            return const Text('XL',
+                            return const Text("Crutches",
                                 style: TextStyle(fontSize: 12));
+                          case 6:
+                            return const Text("Cane",
+                            style: TextStyle(fontSize: 12));
                           default:
                             return const Text('');
                         }
@@ -316,6 +393,8 @@ class BarChartWidget extends StatelessWidget {
                     x: 5,
                     barRods: [BarChartRodData(toY: 8, color: Colors.purple)],
                   ),
+                  BarChartGroupData(x: 6,
+                  barRods: [BarChartRodData(toY: 9, color: Colors.blueGrey)])
                 ],
               ),
             ),
