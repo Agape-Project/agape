@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:agape/auth/repository/auth_repository.dart';
 
 class AuthController {
-
   final AuthRepository authRepository;
 
   AuthController(this.authRepository);
@@ -20,7 +19,8 @@ class AuthController {
     }
   }
 
-  Future<String> register(String firstName, String middleName, String lastName, String email, String phone, String? gender, String? role) async {
+  Future<String> register(String firstName, String middleName, String lastName,
+      String email, String phone, String? gender, String? role) async {
     try {
       final response = await authRepository.registerUser({
         "first_name": firstName,
@@ -31,6 +31,34 @@ class AuthController {
         "gender": gender,
         "role": role ?? "field_worker",
       });
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getUsers() async {
+    try {
+      final response = await authRepository.getUsers();
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> getUserById(String id) async {
+    try {
+      final response = await authRepository.getUserById(id);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<String> updateUser(String id, Map<String, dynamic> userData) async {
+    try {
+      final response = await authRepository.updateUser(id, userData);
+
       return response;
     } catch (e) {
       rethrow;
@@ -61,14 +89,11 @@ class AuthController {
     }
   }
 
-  Future<String> setNewPassword(String email, String password, String password2) async {
+  Future<String> setNewPassword(
+      String email, String password, String password2) async {
     try {
-      final response = await authRepository
-          .setNewPassword({
-            "email": email,
-            "password": password, 
-            "password2": password2
-        });
+      final response = await authRepository.setNewPassword(
+          {"email": email, "password": password, "password2": password2});
       return response;
     } catch (e) {
       rethrow;
