@@ -29,6 +29,63 @@ class AuthRepository {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getUsers() async {
+    final url = Uri.parse('$baseUrl/api/users/');
+    final token = await storage.read(key: 'access_token');
+    final response = await http.get(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token != null ? "Bearer $token" : "",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      final users = data['results']?['data'];
+
+      if (users == null || users is! List) {
+        throw Exception('Users data is not available or invalid');
+      }
+
+      return List<Map<String, dynamic>>.from(users);
+    } else {
+      throw Exception(
+          jsonDecode(response.body)['detail'] ?? 'Error fetching users');
+    }
+  }
+
+//get user by id
+  Future<Map<String, dynamic>> getUserById(String id) async {
+    final url = Uri.parse('$baseUrl/api/users/$id');
+    final token = await storage.read(key: 'access_token');
+    final response = await http.get(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token != null ? "Bearer $token" : "",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print(data);
+      final user = data['data'];
+
+      if (user == null || user is! Map) {
+        throw Exception('User data is not available or invalid');
+      }
+
+      return Map<String, dynamic>.from(user);
+    } else {
+      throw Exception(
+          jsonDecode(response.body)['detail'] ?? 'Error fetching user');
+    }
+  }
+
+// update user
+
   Future<String> loginUser(Map<String, dynamic> userData) async {
     final url = Uri.parse('$baseUrl/api/auth/login/');
     final response = await http.post(
@@ -43,7 +100,6 @@ class AuthRepository {
         if (data['data'] != null &&
             (data['data']['access'] != null ||
                 data['data']['refresh'] != null)) {
-          // Write tokens to secure storage
           await storage.write(
               key: 'access_token', value: data['data']['access']);
           await storage.write(
@@ -108,6 +164,29 @@ class AuthRepository {
       return data['message'] ?? "Password successfully updated";
     } else {
       throw Exception("Failed to set new password: ${response.reasonPhrase}");
+    }
+  }
+  // update user by id
+
+  Future<String> updateUser(String id, Map<String, dynamic> userData) async {
+    final url = Uri.parse(
+        '$baseUrl/api/users/$id/'); 
+    final token = await storage.read(key: "access_token");
+
+    final response = await http.put(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token != null ? "Bearer $token" : "",
+      },
+      body: jsonEncode(userData),
+    );
+
+    if (response.statusCode == 200) {
+      return "User updated successfully";
+    } else {
+      throw Exception(
+          jsonDecode(response.body)['detail'] ?? 'Error updating user');
     }
   }
 
