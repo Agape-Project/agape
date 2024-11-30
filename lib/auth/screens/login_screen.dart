@@ -1,3 +1,5 @@
+import 'package:agape/admin/home.dart';
+import 'package:agape/admin/screens/bottom_nav.dart';
 import 'package:agape/admin/screens/form_screen.dart';
 import 'package:agape/admin/screens/statics_screens.dart';
 import 'package:agape/auth/controllers/auth_controller.dart';
@@ -56,7 +58,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) =>  SubAdminForm(),
+            builder: (context) =>  AdminNavigation(),
           ),
         );
       } catch (e) {
