@@ -45,7 +45,7 @@ class _AdminNavigationState extends ConsumerState<AdminNavigation> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.list_alt_outlined),
+            icon: Icon(Icons.list),
             label: 'List',
           ),
           BottomNavigationBarItem(
@@ -53,11 +53,9 @@ class _AdminNavigationState extends ConsumerState<AdminNavigation> {
             label: 'Report',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.import_export_outlined),
+            icon: Icon(Icons.file_download),
             label: 'Export',
-          ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
             label: 'Setting',
           ),
         ],

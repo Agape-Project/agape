@@ -1,4 +1,5 @@
 import 'package:agape/auth/screens/login_screen.dart';
+import 'package:agape/common/register_record.dart';
 import 'package:agape/utils/colors.dart';
 import 'package:flutter/material.dart';
 
@@ -144,7 +145,7 @@ backgroundColor: secondaryColor,
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const LoginScreen()), 
+                    MaterialPageRoute(builder: (context) => const RegisterRecord()), 
                   );
                 },
                  child: Container(
