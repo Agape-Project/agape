@@ -55,8 +55,10 @@ class _AdminNavigationState extends ConsumerState<AdminNavigation> {
           BottomNavigationBarItem(
             icon: Icon(Icons.file_download),
             label: 'Export',
+          ),
           BottomNavigationBarItem(
-            label: 'Setting',
+          icon: Icon(Icons.settings),
+          label: 'Setting',
           ),
         ],
         currentIndex: _selectedIndex,
