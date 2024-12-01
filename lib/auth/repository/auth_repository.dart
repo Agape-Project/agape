@@ -58,7 +58,7 @@ class AuthRepository {
 
 //get user by id
   Future<Map<String, dynamic>> getUserById(String id) async {
-    final url = Uri.parse('$baseUrl/api/users/$id');
+    final url = Uri.parse('$baseUrl/api/users/$id/');
     final token = await storage.read(key: 'access_token');
     final response = await http.get(
       url,
@@ -68,11 +68,11 @@ class AuthRepository {
       },
     );
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      print(data);
-      final user = data['data'];
+    print(response.body);
 
+    if (response.statusCode == 200) {
+      final user = jsonDecode(response.body);
+      print(user);
       if (user == null || user is! Map) {
         throw Exception('User data is not available or invalid');
       }
@@ -83,8 +83,6 @@ class AuthRepository {
           jsonDecode(response.body)['detail'] ?? 'Error fetching user');
     }
   }
-
-// update user
 
   Future<String> loginUser(Map<String, dynamic> userData) async {
     final url = Uri.parse('$baseUrl/api/auth/login/');
@@ -169,8 +167,7 @@ class AuthRepository {
   // update user by id
 
   Future<String> updateUser(String id, Map<String, dynamic> userData) async {
-    final url = Uri.parse(
-        '$baseUrl/api/users/$id/'); 
+    final url = Uri.parse('$baseUrl/api/users/$id/');
     final token = await storage.read(key: "access_token");
 
     final response = await http.put(

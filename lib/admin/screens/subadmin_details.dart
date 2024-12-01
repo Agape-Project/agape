@@ -76,19 +76,16 @@ class SubadminDetails extends ConsumerWidget {
                 const SizedBox(height: 80),
                 Center(
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 400),
+                  constraints: const BoxConstraints(maxWidth: 400),
                     child: Column(
                       children: [
                         _buildDetailRow("Name",
                             "${user['first_name']} ${user['last_name']}"),
-                        const SizedBox(height: 10),
                         _buildDetailRow(
                             "Gender", user['gender'] ?? "Not specified"),
-                        const SizedBox(height: 10),
                         _buildDetailRow("Email", user['email']),
-                        const SizedBox(height: 10),
                         _buildDetailRow(
-                            "Phone", user['phone'] ?? "Not specified"),
+                            "Phone", user['phone_number'] ?? "Not specified"),
                       ],
                     ),
                   ),
@@ -161,7 +158,7 @@ class SubadminDetails extends ConsumerWidget {
 
   Widget _buildDetailRow(String label, String value) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
           "$label:",
@@ -170,6 +167,7 @@ class SubadminDetails extends ConsumerWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        const SizedBox(width: 24),
         Text(
           value,
           style: const TextStyle(
