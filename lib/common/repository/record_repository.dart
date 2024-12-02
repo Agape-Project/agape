@@ -67,11 +67,13 @@ class DisabilityRecordRepository {
     final response = await http.post(
       url,
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json", 
         "Authorization": token != null ? "Bearer $token" : "",
       },
       body: jsonEncode(recordData),
     );
+
+    print(response.body);
 
     if (response.statusCode == 201) {
       return "Disability record created successfully";
