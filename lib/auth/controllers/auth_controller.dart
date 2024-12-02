@@ -100,9 +100,19 @@ class AuthController {
     }
   }
 
-  Future<void> logout() async {
+  Future<String> logout() async {
     try {
-      await authRepository.logoutUser();
+      final response = await authRepository.logoutUser();
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<String> deleteUser(String id) async {
+    try {
+      final response = authRepository.deleteUser(id);
+      return response;
     } catch (e) {
       rethrow;
     }

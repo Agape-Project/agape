@@ -77,7 +77,10 @@ class ManageSubAdmin extends ConsumerWidget {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => SubAdminForm()),
+            MaterialPageRoute(
+                builder: (context) => const SubAdminForm(
+                      userId: null,
+                    )),
           );
         },
         child: const Icon(Icons.add),
@@ -85,7 +88,7 @@ class ManageSubAdmin extends ConsumerWidget {
     );
   }
 
-  Widget _buildUserCard(BuildContext context,  Map<String, dynamic> user) {
+  Widget _buildUserCard(BuildContext context, Map<String, dynamic> user) {
     String userId = user['id'];
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
@@ -99,7 +102,7 @@ class ManageSubAdmin extends ConsumerWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-           Text(
+            Text(
               "${user['first_name']} ${user['last_name']}",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
             ),
@@ -116,7 +119,7 @@ class ManageSubAdmin extends ConsumerWidget {
                     // Block button functionality
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor, 
+                    backgroundColor: primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -131,11 +134,13 @@ class ManageSubAdmin extends ConsumerWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SubadminDetails(userId: userId)),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              SubadminDetails(userId: userId)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[300], 
+                    backgroundColor: Colors.grey[300],
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),

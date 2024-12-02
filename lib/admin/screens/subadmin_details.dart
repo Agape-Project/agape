@@ -1,5 +1,9 @@
+import 'package:agape/admin/screens/form_screen.dart';
+import 'package:agape/admin/screens/manage_user_screen.dart';
 import 'package:agape/auth/controllers/auth_controller.dart';
 import 'package:agape/widgets/loading_animation_widget.dart';
+import 'package:agape/widgets/snackbar.dart';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,6 +15,28 @@ class SubadminDetails extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authController = ref.read(authControllerProvider);
+
+    void deleteUser() async {
+      try {
+        final response =
+            await ref.read(authControllerProvider).deleteUser(userId);
+
+        Navigator.pop(context);
+        showCustomSnackBar(
+          context,
+          title: 'Success',
+          message: response,
+          type: AnimatedSnackBarType.success,
+        );
+      } catch (e) {
+        showCustomSnackBar(
+          context,
+          title: 'Error',
+          message: e.toString(),
+          type: AnimatedSnackBarType.error,
+        );
+      }
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -76,7 +102,7 @@ class SubadminDetails extends ConsumerWidget {
                 const SizedBox(height: 80),
                 Center(
                   child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 400),
+                    constraints: const BoxConstraints(maxWidth: 400),
                     child: Column(
                       children: [
                         _buildDetailRow("Name",
@@ -106,7 +132,14 @@ class SubadminDetails extends ConsumerWidget {
                             ),
                           ),
                           onPressed: () {
-                            // Handle Edit Profile functionality
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SubAdminForm(
+                                  userId: userId,
+                                ),
+                              ),
+                            );
                           },
                           child: const Padding(
                             padding: EdgeInsets.symmetric(vertical: 12),
@@ -130,9 +163,7 @@ class SubadminDetails extends ConsumerWidget {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
-                          onPressed: () {
-                            // Handle Delete functionality
-                          },
+                          onPressed: deleteUser,
                           child: const Padding(
                             padding: EdgeInsets.symmetric(vertical: 12),
                             child: Text(
