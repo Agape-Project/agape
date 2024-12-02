@@ -1,4 +1,5 @@
 import 'package:agape/auth/screens/login_screen.dart';
+import 'package:agape/common/record_list.dart';
 import 'package:agape/common/register_record.dart';
 import 'package:agape/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +19,8 @@ class _AdminHomeState extends State<AdminHome> {
       appBar: AppBar(
 backgroundColor: secondaryColor,
       ),
-      body: SafeArea(
-        child: Center(
+      body: Center(
+        child: SingleChildScrollView(
         child: ConstrainedBox(
            constraints: const BoxConstraints(maxWidth: 400),
            child: Column(
@@ -188,7 +189,7 @@ backgroundColor: secondaryColor,
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
+                    MaterialPageRoute(builder: (context) =>  UserListPage()),
                   );
                 },
                  child: Container(

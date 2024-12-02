@@ -179,8 +179,7 @@ showCustomSnackBar(
                     const Text("Gender: "),
                     Row(
                       children: [
-                        Expanded(
-                      child: RadioListTile<String>(
+                       RadioListTile<String>(
                         title: const Text("Male"),
                         value: "Male",
                         groupValue: _selectedGender,
@@ -190,9 +189,8 @@ showCustomSnackBar(
                           });
                         },
                       ),
-                    ),
-                    Expanded(
-                      child: RadioListTile<String>(
+                    
+                     RadioListTile<String>(
                         title: const Text("Female"),
                         value: "Female",
                         groupValue: _selectedGender,
@@ -201,9 +199,7 @@ showCustomSnackBar(
                             _selectedGender = value;
                           });
                         },
-                      ),
-                    ),
-                    
+                      ),                   
                       ],
                     )
                   ],

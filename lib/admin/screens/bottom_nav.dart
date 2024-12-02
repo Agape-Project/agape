@@ -1,6 +1,7 @@
 import 'package:agape/admin/home.dart';
 import 'package:agape/admin/screens/setting_screen.dart';
 import 'package:agape/admin/screens/statics_screens.dart';
+import 'package:agape/common/record_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,7 +18,7 @@ class _AdminNavigationState extends ConsumerState<AdminNavigation> {
  
  final List<Widget>  _pages = [
       const AdminHome(),
-      const AdminHome(),
+      UserListPage(),
        DashboardStats(),
       const AdminHome(),
       SettingScreen(),
