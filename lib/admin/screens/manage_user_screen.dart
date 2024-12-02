@@ -22,7 +22,6 @@ class ManageSubAdmin extends ConsumerWidget {
         ),
       ),
       body: Center(
-        child: SingleChildScrollView(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 600),
             child: Column(
@@ -69,7 +68,6 @@ class ManageSubAdmin extends ConsumerWidget {
               ],
             ),
           ),
-        ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: primaryColor,

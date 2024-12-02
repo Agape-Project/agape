@@ -62,7 +62,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
     try {
       final ImagePicker picker = ImagePicker();
       final XFile? pickedFile = await picker.pickImage(
-        source: ImageSource.camera, 
+        source: ImageSource.camera,
         maxWidth: 800,
         maxHeight: 800,
       );
@@ -248,27 +248,30 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                     const Text("Gender: "),
                     Row(
                       children: [
-                       RadioListTile<String>(
-                        title: const Text("Male"),
-                        value: "Male",
-                        groupValue: _selectedGender,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedGender = value;
-                          });
-                        },
-                      ),
-                    
-                     RadioListTile<String>(
-                        title: const Text("Female"),
-                        value: "Female",
-                        groupValue: _selectedGender,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedGender = value;
-                          });
-                        },
-                      ),                   
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text("Male"),
+                            value: "male",
+                            groupValue: _selectedGender,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedGender = value;
+                              });
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: RadioListTile<String>(
+                            title: const Text("Female"),
+                            value: "female",
+                            groupValue: _selectedGender,
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedGender = value;
+                              });
+                            },
+                          ),
+                        ),
                       ],
                     )
                   ],
@@ -906,7 +909,8 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                                   Text("Select File"),
                                 ],
                               )
-                            : Image.file(_warrantIdCardFile!, fit: BoxFit.cover),
+                            : Image.file(_warrantIdCardFile!,
+                                fit: BoxFit.cover),
                       ),
                     ),
                   ),
