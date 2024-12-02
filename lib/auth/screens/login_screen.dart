@@ -40,7 +40,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
       try {
   
-      await ref.read(authControllerProvider).login(email, password);
+      final response = await ref.read(authControllerProvider).login(email, password);
 
         // Hide loading animation
         setState(() {
@@ -51,7 +51,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         showCustomSnackBar(
           context,
           title: 'Success',
-          message: 'Logged in successfully',
+          message: response,
           type: AnimatedSnackBarType.success,
         );
 
@@ -71,7 +71,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         showCustomSnackBar(
           context,
           title: 'Error',
-          message: 'Invalid email or password',
+          message: "Error to login",
           type: AnimatedSnackBarType.error,
         );
        
