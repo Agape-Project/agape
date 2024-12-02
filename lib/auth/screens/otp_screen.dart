@@ -92,9 +92,6 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                   activeFillColor: Colors.white,
                   inactiveFillColor: Colors.white,
                   selectedFillColor: Colors.white,
-                  // activeColor: primaryColor,
-                  // inactiveColor: primaryColor.withOpacity(0.5),
-                  // selectedColor: primaryColor,
                 ),
                 boxShadows: const [
                   BoxShadow(
