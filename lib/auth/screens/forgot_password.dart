@@ -41,6 +41,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         ),
       );
     } else {
+      
       showCustomSnackBar(
           context,
           title: 'Error',
