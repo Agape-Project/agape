@@ -248,30 +248,27 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                     const Text("Gender: "),
                     Row(
                       children: [
-                        Expanded(
-                          child: RadioListTile<String>(
-                            title: const Text("Male"),
-                            value: "Male",
-                            groupValue: _selectedGender,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedGender = value;
-                              });
-                            },
-                          ),
-                        ),
-                        Expanded(
-                          child: RadioListTile<String>(
-                            title: const Text("Female"),
-                            value: "Female",
-                            groupValue: _selectedGender,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedGender = value;
-                              });
-                            },
-                          ),
-                        ),
+                       RadioListTile<String>(
+                        title: const Text("Male"),
+                        value: "Male",
+                        groupValue: _selectedGender,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedGender = value;
+                          });
+                        },
+                      ),
+                    
+                     RadioListTile<String>(
+                        title: const Text("Female"),
+                        value: "Female",
+                        groupValue: _selectedGender,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedGender = value;
+                          });
+                        },
+                      ),                   
                       ],
                     )
                   ],
