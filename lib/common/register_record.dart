@@ -53,6 +53,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
   String? _selectedSize;
   File? _photoFile;
   File? _idCardFile;
+  File? _warrantIdCardFile;
   double _photoUploadProgress = 0.0;
   double _idCardUploadProgress = 0.0;
   bool isProvided = false;
@@ -61,7 +62,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
     try {
       final ImagePicker picker = ImagePicker();
       final XFile? pickedFile = await picker.pickImage(
-        source: ImageSource.camera, // Opens the camera for capturing an image
+        source: ImageSource.camera, 
         maxWidth: 800,
         maxHeight: 800,
       );
@@ -114,6 +115,8 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
         "gender": _selectedGender,
         "date_of_birth": _dateController.text,
         "phone_number": _phoneController.text,
+        "profile_image": _photoFile,
+        "kebele_id_image": _idCardFile,
         "region": _selectedRegion,
         "zone": _zoneController.text,
         "city": _cityController.text,
@@ -840,11 +843,11 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                           Expanded(
                             child: RadioListTile<String>(
                               title: const Text("Male"),
-                              value: "Male",
+                              value: "male",
                               groupValue: _warrantSelectedGender,
                               onChanged: (value) {
                                 setState(() {
-                                  _selectedGender = value;
+                                  _warrantSelectedGender = value;
                                 });
                               },
                             ),
@@ -852,11 +855,11 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                           Expanded(
                             child: RadioListTile<String>(
                               title: const Text("Female"),
-                              value: "Female",
-                              groupValue: _selectedGender,
+                              value: "female",
+                              groupValue: _warrantSelectedGender,
                               onChanged: (value) {
                                 setState(() {
-                                  _selectedGender = value;
+                                  _warrantSelectedGender = value;
                                 });
                               },
                             ),
@@ -866,31 +869,6 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  DatePicker(
-                    controller: _dateController,
-                    labelText: 'Date of birth',
-                    prefixIcon: Icons.calendar_today,
-                    readOnly: true,
-                    onTap: () async {
-                      DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(1900),
-                        lastDate: DateTime.now(),
-                      );
-                      if (pickedDate != null) {
-                        _dateController.text =
-                            "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
-                      }
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please select your date of birth';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 10),
                   CustomTextFormField(
                     controller: _warrantPhoneController,
                     labelText: 'Phone Number',
@@ -922,7 +900,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Center(
-                        child: _photoFile == null
+                        child: _warrantIdCardFile == null
                             ? const Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -931,7 +909,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                                   Text("Select File"),
                                 ],
                               )
-                            : Image.file(_photoFile!, fit: BoxFit.cover),
+                            : Image.file(_warrantIdCardFile!, fit: BoxFit.cover),
                       ),
                     ),
                   ),
