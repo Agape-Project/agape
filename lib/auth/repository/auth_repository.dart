@@ -1,18 +1,18 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:convert';
+import 'package:agape/auth/repository/token_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final authRepositoryProvider = Provider((ref) => AuthRepository());
-
-final storage = FlutterSecureStorage();
 
 class AuthRepository {
   final String baseUrl = "https://agape-project.vercel.app";
 
   Future<String> registerUser(Map<String, dynamic> userData) async {
     final url = Uri.parse('$baseUrl/api/auth/register/');
-    final token = await storage.read(key: 'access_token');
+    final token = await TokenManager.getAccessToken();
     final response = await http.post(
       url,
       headers: {
@@ -31,7 +31,7 @@ class AuthRepository {
 
   Future<List<Map<String, dynamic>>> getUsers() async {
     final url = Uri.parse('$baseUrl/api/users/');
-    final token = await storage.read(key: 'access_token');
+    final token = await TokenManager.getAccessToken();
     final response = await http.get(
       url,
       headers: {
@@ -59,7 +59,7 @@ class AuthRepository {
 //get user by id
   Future<Map<String, dynamic>> getUserById(String id) async {
     final url = Uri.parse('$baseUrl/api/users/$id/');
-    final token = await storage.read(key: 'access_token');
+    final token = await TokenManager.getAccessToken();
     final response = await http.get(
       url,
       headers: {
@@ -68,11 +68,8 @@ class AuthRepository {
       },
     );
 
-    print(response.body);
-
     if (response.statusCode == 200) {
       final user = jsonDecode(response.body);
-      print(user);
       if (user == null || user is! Map) {
         throw Exception('User data is not available or invalid');
       }
@@ -81,6 +78,22 @@ class AuthRepository {
     } else {
       throw Exception(
           jsonDecode(response.body)['detail'] ?? 'Error fetching user');
+    }
+  }
+
+  // delete user
+  Future<String> deleteUser(String id) async {
+    final url = Uri.parse('$baseUrl/api/users/$id/');
+    final token = await TokenManager.getAccessToken();
+    final response = await http.delete(url, headers: {
+      "Content-Type": "application/json",
+      "Authorization": token != null ? "Bearer $token" : "",
+    });
+    if (response.statusCode == 204 || response.statusCode == 200) {
+      return "User deleted successfully";
+    } else {
+      throw Exception(
+          jsonDecode(response.body)['detail'] ?? 'Error deleting user');
     }
   }
 
@@ -95,13 +108,14 @@ class AuthRepository {
     if (response.statusCode == 200) {
       try {
         final data = jsonDecode(response.body);
+        final accessToken = data['data']?['access'];
+        final refreshToken = data['data']?['refresh'];
+
         if (data['data'] != null &&
             (data['data']['access'] != null ||
                 data['data']['refresh'] != null)) {
-          await storage.write(
-              key: 'access_token', value: data['data']['access']);
-          await storage.write(
-              key: 'refresh_token', value: data['data']['refresh']);
+          await TokenManager.setAccessToken(accessToken);
+          await TokenManager.setRefreshToken(refreshToken);
 
           return "Login successful";
         } else {
@@ -168,7 +182,7 @@ class AuthRepository {
 
   Future<String> updateUser(String id, Map<String, dynamic> userData) async {
     final url = Uri.parse('$baseUrl/api/users/$id/');
-    final token = await storage.read(key: "access_token");
+    final token = await TokenManager.getAccessToken();
 
     final response = await http.put(
       url,
@@ -189,7 +203,7 @@ class AuthRepository {
 
   Future<String> logoutUser() async {
     final url = Uri.parse('$baseUrl/api/auth/logout/');
-    final token = await storage.read(key: 'access_token');
+    final token = await TokenManager.getAccessToken();
     final response = await http.post(
       url,
       headers: {
@@ -198,9 +212,9 @@ class AuthRepository {
       },
     );
 
-    if (response.statusCode == 200) {
-      await storage.delete(key: 'access_token');
-      await storage.delete(key: 'refresh_token');
+    if (response.statusCode == 205) {
+      await TokenManager.deleteAccessToken();
+      await TokenManager.deleteRefreshToken();
       return "Logout successful";
     } else {
       throw Exception(
