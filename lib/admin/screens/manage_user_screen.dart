@@ -100,16 +100,20 @@ class ManageSubAdmin extends ConsumerWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              "${user['first_name']} ${user['last_name']}",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            Column(
+              children: [
+                Text(
+                  "${user['first_name']} ${user['last_name']}",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  user['role'],
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                ),
+              ],
             ),
-            const SizedBox(width: 8),
-            Text(
-              user['role'],
-              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-            ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 10),
             Row(
               children: [
                 ElevatedButton(
