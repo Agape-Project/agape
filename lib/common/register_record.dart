@@ -154,41 +154,39 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
             message: e.toString(),
             type: AnimatedSnackBarType.error);
       }
-
-      void _resetForm(){
-        setState(() {
-          _currentStep = 0;
-          _firstNameController.clear();
-          _middleNameController.clear();
-          _lastNameController.clear();
-          _selectedGender = null;
-          _dateController.clear();
-          _phoneController.clear();
-          _selectedRegion = null;
-          _zoneController.clear();
-          _cityController.clear();
-          _woredaController.clear();
-          _warantfirstNameController.clear();
-          _warantmiddleNameController.clear();
-          _warantlastNameController.clear();
-          _warrantPhoneController.clear();
-          _warrantSelectedGender = null;
-          _selectedEquipmentType = null;
-          _selectedCause = null;
-          _selectedSize = null;
-          _hipWidthController.clear();
-          _backrestHeightController.clear();
-          _thighLengthController.clear();
-          _photoFile = null;
-          _idCardFile = null;
-          _photoUploadProgress = 0.0;
-          _idCardUploadProgress = 0.0;
-          isProvided = false;
-        });
-      }
-
-
     }
+  }
+
+  void _resetForm() {
+    setState(() {
+      _currentStep = 0;
+      _firstNameController.clear();
+      _middleNameController.clear();
+      _lastNameController.clear();
+      _selectedGender = null;
+      _dateController.clear();
+      _phoneController.clear();
+      _selectedRegion = null;
+      _zoneController.clear();
+      _cityController.clear();
+      _woredaController.clear();
+      _warantfirstNameController.clear();
+      _warantmiddleNameController.clear();
+      _warantlastNameController.clear();
+      _warrantPhoneController.clear();
+      _warrantSelectedGender = null;
+      _selectedEquipmentType = null;
+      _selectedCause = null;
+      _selectedSize = null;
+      _hipWidthController.clear();
+      _backrestHeightController.clear();
+      _thighLengthController.clear();
+      _photoFile = null;
+      _idCardFile = null;
+      _photoUploadProgress = 0.0;
+      _idCardUploadProgress = 0.0;
+      isProvided = false;
+    });
   }
 
 //
