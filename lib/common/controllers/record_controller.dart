@@ -1,4 +1,14 @@
 import 'package:agape/common/repository/record_repository.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+
+
+
+
+final disabilityRecordControllerProvider = Provider((ref) {
+  final disabilityRecordRepository = ref.read(disabilityRecordRepositoryProvider);
+  return DisabilityRecordController(disabilityRecordRepository);
+});
 
 class DisabilityRecordController {
   DisabilityRecordRepository disabilityRecordRepository;
