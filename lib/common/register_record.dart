@@ -135,7 +135,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
         },
         "hip_width": double.tryParse(_hipWidthController.text) ?? 0.0,
         "backrest_height": double.tryParse(_backrestHeightController.text) ??
-            0.0, // Backrest height
+            0.0, 
         "thigh_length": double.tryParse(_thighLengthController.text) ?? 0.0,
         "is_provided": isProvided,
       };
