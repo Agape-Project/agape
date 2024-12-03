@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:agape/auth/repository/token_manager.dart';
@@ -64,22 +65,49 @@ class DisabilityRecordRepository {
   Future<String> createRecord(Map<String, dynamic> recordData) async {
     final url = Uri.parse('$baseUrl/api/disability-records/');
     final token = await TokenManager.getAccessToken();
-    final response = await http.post(
-      url,
-      headers: {
-        "Content-Type": "application/json", 
-        "Authorization": token != null ? "Bearer $token" : "",
-      },
-      body: jsonEncode(recordData),
-    );
 
-    print(response.body);
+    final request = http.MultipartRequest('POST', url);
+
+    request.headers.addAll({
+      "Content-Type": "application/json",
+      "Authorization": token != null ? "Bearer $token" : "",
+    });
+    recordData.forEach((key, value) {
+      if (value is File) {
+      } else if (value is Map) {
+        request.fields[key] = jsonEncode(value);
+      } else {
+        request.fields[key] = value.toString();
+      }
+    });
+
+    if (recordData['profile_image'] != null &&
+        recordData['profile_image'] is File) {
+      request.files.add(
+        await http.MultipartFile.fromPath(
+            'profile_image', recordData['profile_image'].path),
+      );
+    }
+    if (recordData['kebele_id_image'] != null &&
+        recordData['kebele_id_image'] is File) {
+      request.files.add(
+        await http.MultipartFile.fromPath(
+            'kebele_id_image', recordData['kebele_id_image'].path),
+      );
+    }
+
+    final response = await request.send();
+
+    final responseBody = await response.stream.bytesToString();
+    print('Status Code: ${response.statusCode}');
+    print('Response Body: $responseBody');
 
     if (response.statusCode == 201) {
       return "Disability record created successfully";
     } else {
-      throw Exception(
-          jsonDecode(response.body)['detail'] ?? 'Error creating record');
+      final errorResponse = jsonDecode(responseBody);
+      final errorMessage = errorResponse['detail'] ?? errorResponse.toString();
+      throw Exception(errorMessage);
     }
   }
 
