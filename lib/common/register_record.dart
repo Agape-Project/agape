@@ -65,6 +65,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
         source: ImageSource.camera,
         maxWidth: 800,
         maxHeight: 800,
+        imageQuality: 80,
       );
 
       if (pickedFile != null) {
