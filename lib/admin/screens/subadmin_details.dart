@@ -19,7 +19,7 @@ class SubadminDetails extends ConsumerWidget {
     void deleteUser() async {
       try {
         final response =
-            await ref.read(authControllerProvider).deleteUser(userId);
+        await ref.read(authControllerProvider).deleteUser(userId);
 
         Navigator.pop(context);
         showCustomSnackBar(
@@ -92,7 +92,7 @@ class SubadminDetails extends ConsumerWidget {
                       child: CircleAvatar(
                         radius: 60,
                         backgroundImage: NetworkImage(
-                          user['profile_image'] ??
+                          user['profile_image_url'] ??
                               'https://via.placeholder.com/150',
                         ),
                       ),
