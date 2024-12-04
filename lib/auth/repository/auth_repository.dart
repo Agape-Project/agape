@@ -40,6 +40,8 @@ class AuthRepository {
       },
     );
 
+    print(response.body);
+
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
 
@@ -81,8 +83,8 @@ class AuthRepository {
     }
   }
 
-  // delete user
-  Future<String> deleteUser(String id) async {
+  // block user user
+  Future<String> blockUser(String id) async {
     final url = Uri.parse('$baseUrl/api/users/$id/');
     final token = await TokenManager.getAccessToken();
     final response = await http.delete(url, headers: {
@@ -97,6 +99,23 @@ class AuthRepository {
     }
   }
 
+  // delete user by id
+   Future<String> deleteUser(String id) async {
+    final url = Uri.parse('$baseUrl/api/users/$id/delete/');
+    final token = await TokenManager.getAccessToken();
+    final response = await http.delete(url, headers: {
+      "Content-Type": "application/json",
+      "Authorization": token != null ? "Bearer $token" : "",
+    });
+    if (response.statusCode == 204 || response.statusCode == 200) {
+      return "User deleted successfully";
+    } else {
+      throw Exception(
+          jsonDecode(response.body)['detail'] ?? 'Error deleting user');
+    }
+  }
+  
+// login user
   Future<String> loginUser(Map<String, dynamic> userData) async {
     final url = Uri.parse('$baseUrl/api/auth/login/');
     final response = await http.post(
