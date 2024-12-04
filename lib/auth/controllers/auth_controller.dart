@@ -109,6 +109,17 @@ class AuthController {
     }
   }
 
+// block user
+  Future<String> blockUser(String id) async {
+    try {
+      final response = authRepository.blockUser(id);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // delete user
   Future<String> deleteUser(String id) async {
     try {
       final response = authRepository.deleteUser(id);
