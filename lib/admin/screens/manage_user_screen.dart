@@ -22,52 +22,52 @@ class ManageSubAdmin extends ConsumerWidget {
         ),
       ),
       body: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 600),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search here',
-                      prefixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(24),
-                        borderSide: const BorderSide(color: primaryColor),
-                      ),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search here',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(24),
+                      borderSide: const BorderSide(color: primaryColor),
                     ),
                   ),
                 ),
-                Expanded(
-                  child: FutureBuilder<List<Map<String, dynamic>>>(
-                    future: authController.getUsers(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return LoadingIndicatorWidget();
-                      } else if (snapshot.hasError) {
-                        return Center(
-                          child: Text('Error: ${snapshot.error}'),
-                        );
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Center(
-                          child: Text('No users found'),
-                        );
-                      } else {
-                        final users = snapshot.data!;
-                        return ListView.builder(
-                          itemCount: users.length,
-                          itemBuilder: (context, index) {
-                            return _buildUserCard(context, users[index]);
-                          },
-                        );
-                      }
-                    },
-                  ),
+              ),
+              Expanded(
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: authController.getUsers(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return LoadingIndicatorWidget();
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Error: ${snapshot.error}'),
+                      );
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Text('No users found'),
+                      );
+                    } else {
+                      final users = snapshot.data!;
+                      return ListView.builder(
+                        itemCount: users.length,
+                        itemBuilder: (context, index) {
+                          return _buildUserCard(context, ref, users[index]);
+                        },
+                      );
+                    }
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: primaryColor,
@@ -86,7 +86,8 @@ class ManageSubAdmin extends ConsumerWidget {
     );
   }
 
-  Widget _buildUserCard(BuildContext context, Map<String, dynamic> user) {
+  Widget _buildUserCard(
+      BuildContext context, WidgetRef ref, Map<String, dynamic> user) {
     String userId = user['id'];
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
@@ -117,8 +118,8 @@ class ManageSubAdmin extends ConsumerWidget {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: () {
-                    // Block button functionality
+                  onPressed: () async {
+                    await ref.read(authControllerProvider).blockUser(userId);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
