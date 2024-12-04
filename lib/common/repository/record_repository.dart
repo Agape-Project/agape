@@ -67,6 +67,7 @@ class DisabilityRecordRepository {
     final token = await TokenManager.getAccessToken();
 
     final request = http.MultipartRequest('POST', url);
+    print('Record Data: $recordData');
 
     request.headers.addAll({
       "Content-Type": "application/json",
@@ -93,6 +94,13 @@ class DisabilityRecordRepository {
       request.files.add(
         await http.MultipartFile.fromPath(
             'kebele_id_image', recordData['kebele_id_image'].path),
+      );
+    }
+  if (recordData['warrant']['id_image'] != null &&
+        recordData['id_image'] is File) {
+      request.files.add(
+        await http.MultipartFile.fromPath(
+            'id_image', recordData['id_image'].path),
       );
     }
 
