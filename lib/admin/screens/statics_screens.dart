@@ -342,19 +342,19 @@ class BarChartWidget extends StatelessWidget {
                       getTitlesWidget: (value, meta) {
                         switch (value.toInt()) {
                           case 1:
-                            return const Text("Pedatric",
+                            return const Text("PW",
                                 style: TextStyle(fontSize: 12));
                           case 2:
-                            return const Text("American",
+                            return const Text("AW",
                                 style: TextStyle(fontSize: 12));
                           case 3:
                             return const Text("FWP",
                                 style: TextStyle(fontSize: 12));
                           case 4:
-                            return const Text("Walker",
+                            return const Text("Wk",
                                 style: TextStyle(fontSize: 12));
                           case 5:
-                            return const Text("Crutches",
+                            return const Text("Cr",
                                 style: TextStyle(fontSize: 12));
                           case 6:
                             return const Text("Cane",
