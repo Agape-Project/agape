@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:path/path.dart' as path;
 import 'package:agape/common/repository/record_repository.dart';
 import 'package:agape/widgets/CustomTextFormField.dart';
 import 'package:agape/widgets/button.dart';
@@ -58,7 +59,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
   double _idCardUploadProgress = 0.0;
   bool isProvided = false;
 //methods
-  Future<void> _pickImage(bool isPhoto) async {
+  Future<void> _pickImage(String fileType) async {
     try {
       final ImagePicker picker = ImagePicker();
       final XFile? pickedFile = await picker.pickImage(
@@ -69,16 +70,18 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
       );
 
       if (pickedFile != null) {
-        // Convert the picked file to a `File` object
+
         File imageFile = File(pickedFile.path);
 
-        await _simulateUpload(isPhoto);
+        await _simulateUpload(fileType);
 
         setState(() {
-          if (isPhoto) {
+          if (fileType == "photo") {
             _photoFile = imageFile;
-          } else {
+          } else if (fileType == "idCard") {
             _idCardFile = imageFile;
+          } else if (fileType == "warrantIdCard") {
+            _warrantIdCardFile = imageFile;
           }
         });
       }
@@ -87,15 +90,17 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
     }
   }
 
-  Future<void> _simulateUpload(bool isPhoto) async {
+  Future<void> _simulateUpload(String fileType) async {
     double progress = 0.0;
     while (progress < 1.0) {
       await Future.delayed(const Duration(milliseconds: 200));
       setState(() {
         progress += 0.1;
-        if (isPhoto) {
+        if (fileType == "photo") {
           _photoUploadProgress = progress;
-        } else {
+        } else if (fileType == "idCard") {
+          _idCardUploadProgress = progress;
+        } else if (fileType == "warrantIdCard") {
           _idCardUploadProgress = progress;
         }
       });
@@ -128,6 +133,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
           "last_name": _warantlastNameController.text,
           "phone_number": _warrantPhoneController.text,
           "gender": _warrantSelectedGender,
+          "id_image": _warrantIdCardFile,
         },
         "equipment": {
           "equipment_type": _selectedEquipmentType,
@@ -135,8 +141,8 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
           "cause_of_need": _selectedCause,
         },
         "hip_width": double.tryParse(_hipWidthController.text) ?? 0.0,
-        "backrest_height": double.tryParse(_backrestHeightController.text) ??
-            0.0, 
+        "backrest_height":
+            double.tryParse(_backrestHeightController.text) ?? 0.0,
         "thigh_length": double.tryParse(_thighLengthController.text) ?? 0.0,
         "is_provided": isProvided,
       };
@@ -654,7 +660,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                   const Text("Photo",
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   GestureDetector(
-                    onTap: () => _pickImage(true),
+                    onTap: () => _pickImage("photo"),
                     child: Container(
                       height: 150,
                       decoration: BoxDecoration(
@@ -689,7 +695,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                   const Text("ID Card",
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   GestureDetector(
-                    onTap: () => _pickImage(false),
+                    onTap: () => _pickImage("idCard"),
                     child: Container(
                       height: 150,
                       decoration: BoxDecoration(
@@ -735,48 +741,6 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                       ),
                     ],
                   ),
-
-                  const SizedBox(height: 20),
-
-                  // Navigation Buttons
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: [
-                  //     ElevatedButton(
-                  //       onPressed: () {
-                  //         // Navigate to the previous step
-                  //         setState(() {
-                  //           _currentStep -= 1;
-                  //         });
-                  //       },
-                  //       style: ElevatedButton.styleFrom(
-                  //         backgroundColor: Colors.white,
-                  //         side: BorderSide(color: Colors.blue),
-                  //       ),
-                  //       child: const Text("Back", style: TextStyle(color: Colors.blue)),
-                  //     ),
-                  //     ElevatedButton(
-                  //       onPressed: () {
-                  //         // Validate and go to the next step
-                  //         if (_photoFile != null &&
-                  //             _idCardFile != null &&
-                  //             isProvided) {
-                  //           setState(() {
-                  //             _currentStep += 1;
-                  //           });
-                  //         } else {
-                  //           ScaffoldMessenger.of(context).showSnackBar(
-                  //             const SnackBar(
-                  //               content:
-                  //                   Text("Please complete all fields before proceeding."),
-                  //             ),
-                  //           );
-                  //         }
-                  //       },
-                  //       child: const Text("NEXT"),
-                  //     ),
-                  //   ],
-                  // ),
                 ],
               ),
             ),
@@ -893,7 +857,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 10),
                   GestureDetector(
-                    onTap: () => _pickImage(true),
+                    onTap: () => _pickImage("warrantIdCard"),
                     child: Container(
                       height: 150,
                       decoration: BoxDecoration(
