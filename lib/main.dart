@@ -1,5 +1,6 @@
 import 'package:agape/admin/home.dart';
 import 'package:agape/admin/screens/bottom_nav.dart';
+import 'package:agape/admin/screens/file_export.dart';
 import 'package:agape/admin/screens/form_screen.dart';
 import 'package:agape/auth/screens/forgot_password.dart';
 import 'package:agape/auth/screens/login_screen.dart';
@@ -17,9 +18,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-     home:  SplashScreen(),
+     home: RecordDetailsPage(),
       
     );
   }
