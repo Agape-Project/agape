@@ -30,12 +30,22 @@ class ManageSubAdmin extends ConsumerWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: 'Search here',
-                    prefixIcon: Icon(Icons.search),
+                    hintText: 'Search for sub-admins...',
+                    hintStyle: TextStyle(color: Colors.grey[500], fontSize: 16),
+                    prefixIcon: Icon(Icons.search, color: primaryColor),
+                    filled: true,
+                    fillColor: Colors.grey[100],
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(24),
-                      borderSide: const BorderSide(color: primaryColor),
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
                     ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide:
+                          const BorderSide(color: primaryColor, width: 2),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 14, horizontal: 20),
                   ),
                 ),
               ),
@@ -119,7 +129,7 @@ class ManageSubAdmin extends ConsumerWidget {
               children: [
                 ElevatedButton(
                   onPressed: () async {
-                    await ref.read(authControllerProvider).blockUser(userId);
+                    await ref.read(authControllerProvider).blockOrUnblockUser(userId);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,

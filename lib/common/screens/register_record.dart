@@ -57,6 +57,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
   File? _warrantIdCardFile;
   double _photoUploadProgress = 0.0;
   double _idCardUploadProgress = 0.0;
+  double _warrantIdCardUploadProgress = 0.0;
   bool isProvided = false;
 //methods
   Future<void> _pickImage(String fileType) async {
@@ -70,7 +71,6 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
       );
 
       if (pickedFile != null) {
-
         File imageFile = File(pickedFile.path);
 
         await _simulateUpload(fileType);
@@ -101,7 +101,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
         } else if (fileType == "idCard") {
           _idCardUploadProgress = progress;
         } else if (fileType == "warrantIdCard") {
-          _idCardUploadProgress = progress;
+          _warrantIdCardUploadProgress = progress;
         }
       });
     }
@@ -159,6 +159,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
 
         _resetForm();
       } catch (e) {
+        print(e.toString());
         showCustomSnackBar(context,
             title: 'Error',
             message: e.toString(),
@@ -881,7 +882,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                   ),
                   const SizedBox(height: 8),
                   LinearProgressIndicator(
-                    value: _photoUploadProgress,
+                    value: _warrantIdCardUploadProgress,
                     backgroundColor: Colors.grey[300],
                     valueColor:
                         const AlwaysStoppedAnimation<Color>(Colors.blue),
@@ -952,16 +953,13 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                           onPressed: details.onStepCancel,
                           style: TextButton.styleFrom(
                             backgroundColor: Colors.white,
-                            minimumSize:
-                                const Size(100, 40), // Button background color
-                            foregroundColor: const Color.fromRGBO(
-                                9, 19, 58, 1), // Text color (blue-black)
+                            minimumSize: const Size(100, 40),
+                            foregroundColor: const Color.fromRGBO(9, 19, 58, 1),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  8), // Slightly curved edges
+                              borderRadius: BorderRadius.circular(8),
                               side: const BorderSide(
                                   color: Color.fromRGBO(9, 19, 58, 1),
-                                  width: 1.5), // Border color and width
+                                  width: 1.5),
                             ),
                           ),
                           child: const Text("Back"),

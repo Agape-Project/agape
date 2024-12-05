@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final authRepositoryProvider = Provider((ref) => AuthRepository());
 
+final userProvider = StateProvider<Map<String, dynamic>>((ref) => {});
+
 class AuthRepository {
   final String baseUrl = "https://agape-project.vercel.app";
 
@@ -29,6 +31,29 @@ class AuthRepository {
     }
   }
 
+// get current user info
+  Future<Map<String, dynamic>> getCurrentUser() async {
+    final url = Uri.parse('$baseUrl/api/auth/profile/');
+    final token = await TokenManager.getAccessToken();
+    final response = await http.get(
+      url,
+      headers: {
+        "Authorization": token != null ? "Bearer $token" : "",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final user = jsonDecode(response.body);
+      if (user == null || user is! Map) {
+        throw Exception('User data is not available or invalid');
+      }
+      return Map<String, dynamic>.from(user);
+    } else {
+      throw Exception(
+          jsonDecode(response.body)['detail'] ?? 'Error fetching user');
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getUsers() async {
     final url = Uri.parse('$baseUrl/api/users/');
     final token = await TokenManager.getAccessToken();
@@ -39,8 +64,6 @@ class AuthRepository {
         "Authorization": token != null ? "Bearer $token" : "",
       },
     );
-
-    print(response.body);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -83,24 +106,27 @@ class AuthRepository {
     }
   }
 
-  // block user user
-  Future<String> blockUser(String id) async {
-    final url = Uri.parse('$baseUrl/api/users/$id/');
+  // block and unblock user by id patch request
+  Future<String> blockUnblockUser(String id) async {
+    final url = Uri.parse('$baseUrl/api/users/$id/block/');
     final token = await TokenManager.getAccessToken();
-    final response = await http.delete(url, headers: {
-      "Content-Type": "application/json",
-      "Authorization": token != null ? "Bearer $token" : "",
-    });
-    if (response.statusCode == 204 || response.statusCode == 200) {
-      return "User deleted successfully";
+    final response = await http.patch(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token != null ? "Bearer $token" : "",
+      },
+    );
+    if (response.statusCode == 200) {
+      return "User blocked successfully";
     } else {
       throw Exception(
-          jsonDecode(response.body)['detail'] ?? 'Error deleting user');
+          jsonDecode(response.body)['detail'] ?? 'Error blocking user');
     }
   }
 
   // delete user by id
-   Future<String> deleteUser(String id) async {
+  Future<String> deleteUser(String id) async {
     final url = Uri.parse('$baseUrl/api/users/$id/delete/');
     final token = await TokenManager.getAccessToken();
     final response = await http.delete(url, headers: {
@@ -114,7 +140,7 @@ class AuthRepository {
           jsonDecode(response.body)['detail'] ?? 'Error deleting user');
     }
   }
-  
+
 // login user
   Future<String> loginUser(Map<String, dynamic> userData) async {
     final url = Uri.parse('$baseUrl/api/auth/login/');
@@ -135,7 +161,6 @@ class AuthRepository {
                 data['data']['refresh'] != null)) {
           await TokenManager.setAccessToken(accessToken);
           await TokenManager.setRefreshToken(refreshToken);
-
           return "Login successful";
         } else {
           throw Exception(data['detail'] ?? 'Invalid email or password');
@@ -179,6 +204,29 @@ class AuthRepository {
     } else {
       throw Exception(
           jsonDecode(response.body)['detail'] ?? "Error verifying OTP");
+    }
+  }
+
+  // update user password
+  Future<String> updatePassword(
+      String id, Map<String, dynamic> userData) async {
+
+    final url = Uri.parse('$baseUrl/api/users/$id/update-password/');
+    final token = await TokenManager.getAccessToken();
+    final response = await http.patch(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token != null ? "Bearer $token" : "",
+      },
+      body: jsonEncode(userData),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return data['message'] ?? "Password successfully updated";
+    } else {
+      throw Exception("Failed to update password: ${response.reasonPhrase}");
     }
   }
 

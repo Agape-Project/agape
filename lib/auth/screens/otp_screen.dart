@@ -104,7 +104,6 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                   // Optional: Handle changes in OTP value
                 },
                 beforeTextPaste: (text) {
-                  // Allow pasting of text
                   return true;
                 },
               ),

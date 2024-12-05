@@ -1,6 +1,6 @@
 import 'package:agape/auth/screens/login_screen.dart';
-import 'package:agape/common/record_list.dart';
-import 'package:agape/common/register_record.dart';
+import 'package:agape/common/screens/record_list.dart';
+import 'package:agape/common/screens/register_record.dart';
 import 'package:agape/utils/colors.dart';
 import 'package:flutter/material.dart';
 

@@ -101,7 +101,7 @@ class _UserListPageState extends ConsumerState<UserListPage> {
                                         CircleAvatar(
                                           radius: 30,
                                           backgroundImage: NetworkImage(
-                                            record['profile_image_url'] ??
+                                            record['profile_image'] ??
                                                 'https://via.placeholder.com/150',
                                           ),
                                         ),

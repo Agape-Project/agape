@@ -46,6 +46,17 @@ class AuthController {
     }
   }
 
+//  get current user info
+  Future<Map<String, dynamic>> getCurrentUser() async {
+    try {
+      final response = await authRepository.getCurrentUser();
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
   Future<Map<String, dynamic>> getUserById(String id) async {
     try {
       final response = await authRepository.getUserById(id);
@@ -89,6 +100,15 @@ class AuthController {
     }
   }
 
+  Future<String> updatePassword(String id, Map<String, dynamic> userData) async {
+    try {
+      final response = await authRepository.updatePassword(id, userData);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<String> setNewPassword(
       String email, String password, String password2) async {
     try {
@@ -109,16 +129,15 @@ class AuthController {
     }
   }
 
-// block user
-  Future<String> blockUser(String id) async {
+// block or unblock user
+  Future<String> blockOrUnblockUser(String id) async {
     try {
-      final response = authRepository.blockUser(id);
+      final response = authRepository.blockUnblockUser(id);
       return response;
     } catch (e) {
       rethrow;
     }
   }
-
   // delete user
   Future<String> deleteUser(String id) async {
     try {
