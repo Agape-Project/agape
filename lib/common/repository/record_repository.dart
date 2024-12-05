@@ -61,13 +61,12 @@ class DisabilityRecordRepository {
     }
   }
 
-  // Create a new disability record (assuming POST is used)
   Future<String> createRecord(Map<String, dynamic> recordData) async {
+    print(recordData);
     final url = Uri.parse('$baseUrl/api/disability-records/');
     final token = await TokenManager.getAccessToken();
 
     final request = http.MultipartRequest('POST', url);
-    print('Record Data: $recordData');
 
     request.headers.addAll({
       "Content-Type": "application/json",
@@ -96,19 +95,23 @@ class DisabilityRecordRepository {
             'kebele_id_image', recordData['kebele_id_image'].path),
       );
     }
-  if (recordData['warrant']['id_image'] != null &&
-        recordData['id_image'] is File) {
+    if (recordData['warrant'] != null &&
+        recordData['warrant'] is Map &&
+        recordData['warrant']['id_image'] != null &&
+        recordData['warrant']['id_image'] is File) {
       request.files.add(
         await http.MultipartFile.fromPath(
-            'id_image', recordData['id_image'].path),
+          'warrant_id_image',
+          (recordData['warrant']['id_image'] as File).path,
+        ),
       );
     }
 
     final response = await request.send();
 
     final responseBody = await response.stream.bytesToString();
-    print('Status Code: ${response.statusCode}');
-    print('Response Body: $responseBody');
+
+    print(response.statusCode);
 
     if (response.statusCode == 201) {
       return "Disability record created successfully";
