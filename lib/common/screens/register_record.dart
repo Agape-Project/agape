@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:path/path.dart' as path;
 import 'package:agape/common/repository/record_repository.dart';
 import 'package:agape/widgets/CustomTextFormField.dart';
 import 'package:agape/widgets/button.dart';
@@ -11,7 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 class RegisterRecord extends ConsumerStatefulWidget {
-  const RegisterRecord({Key? key}) : super(key: key);
+  final String? recordId;
+  const RegisterRecord({Key? key, required this.recordId}) : super(key: key);
 
   @override
   ConsumerState<RegisterRecord> createState() => _CustomStepperState();
