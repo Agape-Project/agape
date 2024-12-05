@@ -4,6 +4,7 @@ import 'package:agape/admin/screens/file_export.dart';
 import 'package:agape/admin/screens/form_screen.dart';
 import 'package:agape/auth/screens/forgot_password.dart';
 import 'package:agape/auth/screens/login_screen.dart';
+import 'package:agape/common/record_details.dart';
 import 'package:agape/common/record_list.dart';
 import 'package:agape/common/register_record.dart';
 import 'package:agape/common/splash.dart';
@@ -20,9 +21,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-     home: SplashScreen(),
+     home: RecordDetailsPage(),
       
     );
   }
