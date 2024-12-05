@@ -42,4 +42,24 @@ class DisabilityRecordController {
       rethrow;
     }
   }
+
+  Future<String> updateRecord(String id, Map<String, dynamic> recordData) async {
+    try {
+      final response =
+       await disabilityRecordRepository.updateRecord(id, recordData);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+  
+  Future<String> deleteRecord(String id) async {
+    try {
+      final response = await disabilityRecordRepository.deleteRecord(id);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
 }
