@@ -1,4 +1,5 @@
 import 'package:agape/common/controllers/record_controller.dart';
+import 'package:agape/common/record_details.dart';
 import 'package:agape/utils/colors.dart';
 import 'package:agape/widgets/loading_animation_widget.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +85,7 @@ class _UserListPageState extends ConsumerState<UserListPage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          UserDetailsPage(record: record),
+                                          RecordDetailsPage(recordId: record['id']),
                                     ),
                                   );
                                 },
@@ -390,35 +391,4 @@ class _UserListPageState extends ConsumerState<UserListPage> {
     ),
   );
 }
-}
-
-class UserDetailsPage extends StatelessWidget {
-  final Map<String, dynamic> record;
-
-  const UserDetailsPage({required this.record});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('User Details'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              record['name'] ?? 'Unknown',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text('Gender: ${record['gender'] ?? 'N/A'}'),
-            const SizedBox(height: 8),
-            Text('Status: ${record['is_provided'] ? 'Completed' : 'Pending'}'),
-          ],
-        ),
-      ),
-    );
-  }
 }
