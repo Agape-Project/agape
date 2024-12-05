@@ -62,56 +62,42 @@ class DisabilityRecordRepository {
   }
 
   Future<String> createRecord(Map<String, dynamic> recordData) async {
-    print(recordData);
     final url = Uri.parse('$baseUrl/api/disability-records/');
     final token = await TokenManager.getAccessToken();
 
     final request = http.MultipartRequest('POST', url);
 
     request.headers.addAll({
-      "Content-Type": "application/json",
       "Authorization": token != null ? "Bearer $token" : "",
     });
-    recordData.forEach((key, value) {
+
+    void processNestedMap(String parentKey, Map<String, dynamic> map) {
+      map.forEach((key, value) async {
+        final fullKey = parentKey.isNotEmpty ? '$parentKey.$key' : key;
+        if (value is File) {
+          request.files
+              .add(await http.MultipartFile.fromPath(fullKey, value.path));
+        } else if (value is Map<String, dynamic>) {
+          processNestedMap(fullKey, value);
+        } else {
+          request.fields[fullKey] = value.toString();
+        }
+      });
+    }
+
+    recordData.forEach((key, value) async {
       if (value is File) {
-      } else if (value is Map) {
-        request.fields[key] = jsonEncode(value);
+        request.files.add(await http.MultipartFile.fromPath(key, value.path));
+      } else if (value is Map<String, dynamic>) {
+        processNestedMap(key, value);
       } else {
         request.fields[key] = value.toString();
       }
     });
 
-    if (recordData['profile_image'] != null &&
-        recordData['profile_image'] is File) {
-      request.files.add(
-        await http.MultipartFile.fromPath(
-            'profile_image', recordData['profile_image'].path),
-      );
-    }
-    if (recordData['kebele_id_image'] != null &&
-        recordData['kebele_id_image'] is File) {
-      request.files.add(
-        await http.MultipartFile.fromPath(
-            'kebele_id_image', recordData['kebele_id_image'].path),
-      );
-    }
-    if (recordData['warrant'] != null &&
-        recordData['warrant'] is Map &&
-        recordData['warrant']['id_image'] != null &&
-        recordData['warrant']['id_image'] is File) {
-      request.files.add(
-        await http.MultipartFile.fromPath(
-          'warrant_id_image',
-          (recordData['warrant']['id_image'] as File).path,
-        ),
-      );
-    }
-
     final response = await request.send();
 
     final responseBody = await response.stream.bytesToString();
-
-    print(response.statusCode);
 
     if (response.statusCode == 201) {
       return "Disability record created successfully";
