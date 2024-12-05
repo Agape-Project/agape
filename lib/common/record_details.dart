@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class RecordDetailsPage extends StatelessWidget {
-  const RecordDetailsPage({super.key});
+  const RecordDetailsPage({super.key, required Map<String, dynamic> record});
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,7 @@ class RecordDetailsPage extends StatelessWidget {
                           );
                         },
                         child: const CircleAvatar(
-                          radius: 50,
+                          radius: 70,
                           backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_640.png'),
                         ),
                       ),

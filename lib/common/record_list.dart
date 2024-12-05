@@ -1,4 +1,5 @@
 import 'package:agape/common/controllers/record_controller.dart';
+import 'package:agape/common/record_details.dart';
 import 'package:agape/utils/colors.dart';
 import 'package:agape/widgets/loading_animation_widget.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +85,7 @@ class _UserListPageState extends ConsumerState<UserListPage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          UserDetailsPage(record: record),
+                                          RecordDetailsPage(record: record),
                                     ),
                                   );
                                 },
