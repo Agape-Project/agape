@@ -130,6 +130,33 @@ class DisabilityRecordRepository {
           jsonDecode(response.body)['detail'] ?? 'Error updating record');
     }
   }
+  
+  // filter records by query
+  Future<List<Map<String, dynamic>>> filterRecords(String query) async {
+    final url = Uri.parse('$baseUrl/api/disability-records/?$query');
+    final token = await TokenManager.getAccessToken();
+    final response = await http.get(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": token != null ? "Bearer $token" : "",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final records = data['results']?['data'];
+
+      if (records == null || records is! List) {
+        throw Exception('Disability record data is not available or invalid');
+      }
+
+      return List<Map<String, dynamic>>.from(records);
+    } else {
+      throw Exception(
+          jsonDecode(response.body)['detail'] ?? 'Error fetching records');
+    }
+  }
 
   // Delete a disability record by ID (assuming DELETE is used)
   Future<String> deleteRecord(String id) async {
