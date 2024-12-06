@@ -30,9 +30,9 @@ class ManageSubAdmin extends ConsumerWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: 'Search for sub-admins...',
-                    hintStyle: TextStyle(color: Colors.grey[500], fontSize: 16),
-                    prefixIcon: Icon(Icons.search, color: primaryColor),
+                    hintText: 'Search for sub admin',
+                    hintStyle: TextStyle(color: Colors.grey[600], fontSize: 16),
+                    prefixIcon: const Icon(Icons.search, color: primaryColor),
                     filled: true,
                     fillColor: Colors.grey[100],
                     border: OutlineInputBorder(
