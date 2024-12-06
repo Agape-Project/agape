@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:agape/auth/repository/token_manager.dart';
 
+import 'package:path/path.dart';
+
 final disabilityRecordRepositoryProvider =
     Provider((ref) => DisabilityRecordRepository());
 
@@ -72,8 +74,10 @@ class DisabilityRecordRepository {
       "Content-Type": "application/json",
       "Authorization": token != null ? "Bearer $token" : "",
     });
+
     recordData.forEach((key, value) {
       if (value is File) {
+        // Skip File objects
       } else if (value is Map) {
         request.fields[key] = jsonEncode(value);
       } else {
@@ -81,20 +85,30 @@ class DisabilityRecordRepository {
       }
     });
 
+    // Add profile_image file
     if (recordData['profile_image'] != null &&
         recordData['profile_image'] is File) {
       request.files.add(
         await http.MultipartFile.fromPath(
-            'profile_image', recordData['profile_image'].path),
+          'profile_image',
+          recordData['profile_image'].path,
+          filename: basename(recordData['profile_image'].path),
+        ),
       );
     }
+
+    // Add kebele_id_image file
     if (recordData['kebele_id_image'] != null &&
         recordData['kebele_id_image'] is File) {
       request.files.add(
         await http.MultipartFile.fromPath(
-            'kebele_id_image', recordData['kebele_id_image'].path),
+          'kebele_id_image',
+          recordData['kebele_id_image'].path,
+          filename: basename(recordData['kebele_id_image'].path),
+        ),
       );
     }
+
     if (recordData['warrant'] != null &&
         recordData['warrant'] is Map &&
         recordData['warrant']['id_image'] != null &&
@@ -103,12 +117,12 @@ class DisabilityRecordRepository {
         await http.MultipartFile.fromPath(
           'warrant_id_image',
           (recordData['warrant']['id_image'] as File).path,
+          filename: basename((recordData['warrant']['id_image'] as File).path),
         ),
       );
     }
 
     final response = await request.send();
-
     final responseBody = await response.stream.bytesToString();
 
     print(response.statusCode);
