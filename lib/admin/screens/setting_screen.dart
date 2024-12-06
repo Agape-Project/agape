@@ -1,3 +1,4 @@
+import 'package:agape/admin/screens/blocked_admins.dart';
 import 'package:agape/admin/screens/manage_user_screen.dart';
 import 'package:agape/admin/screens/profile_screen.dart';
 import 'package:agape/auth/controllers/auth_controller.dart';
@@ -9,11 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SettingScreen extends ConsumerWidget {
+  const SettingScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: const Text('Settings'),
         centerTitle: true,
       ),
       backgroundColor: secondaryColor,
@@ -48,6 +51,16 @@ class SettingScreen extends ConsumerWidget {
                       );
                     },
                   ),
+                   _buildSettingCard(
+                    title: 'BLocked Admins',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const BlockedAdmins()),
+                      );
+                    },
+                  ),
                   _buildSettingCard(
                     title: 'Logout',
                     onTap: () async {
@@ -62,7 +75,7 @@ class SettingScreen extends ConsumerWidget {
                       );
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                        MaterialPageRoute(builder: (context) => const LoginScreen()),
                       );
                     },
                   ),
