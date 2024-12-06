@@ -1,5 +1,4 @@
 import 'package:agape/admin/screens/form_screen.dart';
-import 'package:agape/admin/screens/manage_user_screen.dart';
 import 'package:agape/auth/controllers/auth_controller.dart';
 import 'package:agape/widgets/loading_animation_widget.dart';
 import 'package:agape/widgets/snackbar.dart';
@@ -102,7 +101,7 @@ class SubadminDetails extends ConsumerWidget {
                 const SizedBox(height: 80),
                 Center(
                   child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 400),
+                    constraints: const BoxConstraints(maxWidth: 600),
                     child: Column(
                       children: [
                         _buildDetailRow("Name",
