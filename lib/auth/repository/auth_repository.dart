@@ -210,7 +210,6 @@ class AuthRepository {
   // update user password
   Future<String> updatePassword(
       String id, Map<String, dynamic> userData) async {
-
     final url = Uri.parse('$baseUrl/api/users/$id/update-password/');
     final token = await TokenManager.getAccessToken();
     final response = await http.patch(
@@ -278,7 +277,6 @@ class AuthRepository {
         "Authorization": token != null ? "Bearer $token" : "",
       },
     );
-
     if (response.statusCode == 205) {
       await TokenManager.deleteAccessToken();
       await TokenManager.deleteRefreshToken();
