@@ -57,7 +57,7 @@ class SettingScreen extends ConsumerWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const BlockedAdmins()),
+                            builder: (context) =>  const BlockedAdmins()),
                       );
                     },
                   ),

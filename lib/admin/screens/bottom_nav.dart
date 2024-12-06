@@ -1,4 +1,5 @@
 import 'package:agape/admin/home.dart';
+import 'package:agape/admin/screens/file_export.dart';
 import 'package:agape/admin/screens/setting_screen.dart';
 import 'package:agape/admin/screens/statics_screens.dart';
 import 'package:agape/common/screens/record_list.dart';
@@ -20,7 +21,7 @@ class _AdminNavigationState extends ConsumerState<AdminNavigation> {
       const AdminHome(),
       UserListPage(),
        DashboardStats(),
-      const AdminHome(),
+      ExportPage(),
       SettingScreen(),
 
     ];
