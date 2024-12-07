@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:agape/common/controllers/record_controller.dart';
 import 'package:agape/common/repository/record_repository.dart';
 import 'package:agape/widgets/CustomTextFormField.dart';
 import 'package:agape/widgets/button.dart';
@@ -59,7 +60,70 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
   double _idCardUploadProgress = 0.0;
   double _warrantIdCardUploadProgress = 0.0;
   bool isProvided = false;
-//methods
+  bool _isDataLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.recordId != null) {
+      ref
+          .read(disabilityRecordControllerProvider)
+          .getRecordById(widget.recordId!)
+          .then((record) {
+        setState(() {
+          _firstNameController.text = record['first_name'] ?? '';
+          _middleNameController.text = record['middle_name'] ?? '';
+          _lastNameController.text = record['last_name'] ?? '';
+          _selectedGender = record['gender'] ?? null;
+          _dateController.text = record['date_of_birth'] ?? '';
+          _phoneController.text = record['phone_number'] ?? '';
+          _selectedRegion = record['region'] ?? 'amhara';
+          _zoneController.text = record['zone'] ?? '';
+          _cityController.text = record['city'] ?? '';
+          _woredaController.text = record['woreda'] ?? '';
+          _warantfirstNameController.text =
+              record['warrant']?['first_name'] ?? '';
+          _warantmiddleNameController.text =
+              record['warrant']?['middle_name'] ?? '';
+          _warantlastNameController.text =
+              record['warrant']?['last_name'] ?? '';
+          _warrantPhoneController.text =
+              record['warrant']?['phone_number'] ?? '';
+          _warrantSelectedGender = record['warrant']?['gender'] ?? null;
+          _selectedEquipmentType =
+              record['equipment']?['equipment_type'] ?? null;
+          _selectedCause = record['equipment']?['cause_of_need'] ?? null;
+          _selectedSize = record['equipment']?['size'] ?? null;
+          _hipWidthController.text = record['hip_width']?.toString() ?? '';
+          _backrestHeightController.text =
+              record['backrest_height']?.toString() ?? '';
+          _thighLengthController.text =
+              record['thigh_length']?.toString() ?? '';
+          isProvided = record['is_provided'] ?? false;
+
+          _photoFile = record['profile_image'] != null
+              ? File(record['profile_image'])
+              : null;
+          _idCardFile = record['kebele_id_image'] != null
+              ? File(record['kebele_id_image'])
+              : null;
+          _warrantIdCardFile = record['warrant']?['id_image'] != null
+              ? File(record['warrant']['id_image'])
+              : null;
+
+          _isDataLoaded = true;
+        });
+      }).catchError((error) {
+        setState(() {
+          _isDataLoaded = true;
+        });
+      });
+    } else {
+      _isDataLoaded = true;
+    }
+  }
+
+//methods to simulate image upload
   Future<void> _pickImage(String fileType) async {
     try {
       final ImagePicker picker = ImagePicker();
@@ -148,16 +212,26 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
       };
 
       try {
-        final response = await ref
-            .read(disabilityRecordRepositoryProvider)
-            .createRecord(recordData);
+        if (widget.recordId != null) {
+          final response = await ref
+              .read(disabilityRecordControllerProvider)
+              .updateRecord(widget.recordId!, recordData);
 
-        showCustomSnackBar(context,
-            title: 'Success',
-            message: response,
-            type: AnimatedSnackBarType.success);
+          showCustomSnackBar(context,
+              title: 'Success',
+              message: response,
+              type: AnimatedSnackBarType.success);
+        } else {
+          final response = await ref
+              .read(disabilityRecordControllerProvider)
+              .createRecord(recordData);
 
-        _resetForm();
+          showCustomSnackBar(context,
+              title: 'Success',
+              message: response,
+              type: AnimatedSnackBarType.success);
+        }
+        resetForm();
       } catch (e) {
         print(e.toString());
         showCustomSnackBar(context,
@@ -168,7 +242,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
     }
   }
 
-  void _resetForm() {
+  void resetForm() {
     setState(() {
       _currentStep = 0;
       _firstNameController.clear();
@@ -629,19 +703,6 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                           value == null ? "Please select a size" : null,
                     ),
                     const SizedBox(height: 10),
-
-                    // Submit Button
-                    // ElevatedButton(
-                    //   onPressed: () {
-                    //     if (_formKey3.currentState!.validate()) {
-                    //       // Handle submission logic
-                    //       ScaffoldMessenger.of(context).showSnackBar(
-                    //         const SnackBar(content: Text("Form submitted successfully!")),
-                    //       );
-                    //     }
-                    //   },
-                    //   child: const Text("Submit"),
-                    // ),
                   ],
                 ),
               ),
@@ -890,7 +951,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                   const SizedBox(height: 20),
                   MyButtons(
                     onTap: _submitData,
-                    text: "Register",
+                    text: widget.recordId == null ? "Register" : "Update",
                   ),
                 ])))
         // Add additional steps as required...
@@ -971,15 +1032,12 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                             ElevatedButton(
                               onPressed: details.onStepContinue,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color.fromRGBO(9, 19, 58,
-                                    1), // Blue-black background color
-                                foregroundColor:
-                                    Colors.white, // White text color
-                                minimumSize: const Size(
-                                    100, 40), // Ensures consistent size
+                                backgroundColor:
+                                    const Color.fromRGBO(9, 19, 58, 1),
+                                foregroundColor: Colors.white,
+                                minimumSize: const Size(100, 40),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      8), // Slightly curved edges
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
                               child: const Text("NEXT"),
