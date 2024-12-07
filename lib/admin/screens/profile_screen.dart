@@ -79,8 +79,7 @@ class ProfileScreen extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     // Edit Profile button
-                    Expanded(
-                      child: SizedBox(
+                    SizedBox(
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color.fromARGB(
@@ -108,10 +107,9 @@ class ProfileScreen extends ConsumerWidget {
                           ),
                         ),
                       ),
-                    ),
+                    
                     const SizedBox(width: 20),
-                    Expanded(
-                      child: SizedBox(
+                     SizedBox(
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
                             side: const BorderSide(
@@ -141,7 +139,7 @@ class ProfileScreen extends ConsumerWidget {
                           ),
                         ),
                       ),
-                    ),
+                    
                   ],
                 ),
               ),
