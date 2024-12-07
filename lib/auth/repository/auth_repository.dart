@@ -64,6 +64,9 @@ class AuthRepository {
         "Authorization": token != null ? "Bearer $token" : "",
       },
     );
+     // Log the response status code and body
+    print('Response Status Code: ${response.statusCode}');
+    print('Response Body: ${response.body}');
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

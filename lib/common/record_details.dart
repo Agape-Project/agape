@@ -7,12 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:agape/widgets/snackbar.dart';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 
-class RecordDetailsPage extends ConsumerWidget {
-  final String recordId;
-  const RecordDetailsPage({
-    Key? key,
-    required this.recordId,
-  }) : super(key: key);
+class RecordDetailsPage extends StatelessWidget {
+  const RecordDetailsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,227 +19,144 @@ class RecordDetailsPage extends ConsumerWidget {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Record Details'),
-          centerTitle: true,
-        ),
-        body: FutureBuilder<Map<String, dynamic>>(
-            future: fetchRecord(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(
-                  child: Text('Error: ${snapshot.error}'),
-                );
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(
-                  child: Text('No data found.'),
-                );
-              } else {
-                final record = snapshot.data!;
-                return Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 600),
-                    child: SingleChildScrollView(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
+      appBar: AppBar(
+        title: const Text('Record Details'),
+      ),
+      body: Center(
+      
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 600),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                // Profile Container
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      // Avatar Section
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => const ImageOverlay(
+                              imageUrl: 'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_640.png',
+                            ),
+                          );
+                        },
+                        child: const CircleAvatar(
+                          radius: 50,
+                          backgroundImage: NetworkImage('https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_640.png'),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      // Details Section
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          // Profile Container
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              children: [
-                                // Avatar Section
-                                GestureDetector(
-                                  onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => ImageOverlay(
-                                        imageUrl: record['profile_image'] ?? '',
-                                      ),
-                                    );
-                                  },
-                                  child: CircleAvatar(
-                                    radius: 50,
-                                    backgroundImage: NetworkImage(
-                                      record['profile_image'] ?? '',
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 16),
-
-                                // Details Section
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Center(
-                                      child: DetailRow(
-                                          title: 'First Name',
-                                          value: record['first_name'] ?? ''),
-                                    ),
-                                    DetailRow(
-                                        title: 'Middle Name',
-                                        value: record['middle_name'] ?? ''),
-                                    DetailRow(
-                                        title: 'Last Name',
-                                        value: record['last_name'] ?? ''),
-                                    DetailRow(
-                                        title: 'Gender',
-                                        value: record['gender'] ?? ''),
-                                    DetailRow(
-                                      title: 'Age',
-                                      value: calculateAge(
-                                              record['date_of_birth'] ?? '')
-                                          .toString(),
-                                    ),
-                                    DetailRow(
-                                        title: 'Region',
-                                        value: record['region'] ?? ''),
-                                    DetailRow(
-                                        title: 'Zone',
-                                        value: record['zone'] ?? ''),
-                                    DetailRow(
-                                        title: 'Woreda',
-                                        value: record['woreda'] ?? ''),
-                                    DetailRow(
-                                        title: 'Hip Width',
-                                        value:
-                                            "${record['hip_width'] ?? ''} cm"),
-                                    DetailRow(
-                                        title: 'Backrest Height',
-                                        value:
-                                            "${record['backrest_height'] ?? ''} cm"),
-                                    DetailRow(
-                                        title: 'Thigh Length',
-                                        value:
-                                            "${record['thigh_length'] ?? ''} cm"),
-                                    DetailRow(
-                                        title: 'Equipment Type',
-                                        value: record['equipment']![
-                                                'equipment_type'] ??
-                                            ''),
-                                    DetailRow(
-                                        title: 'Cause of need',
-                                        value: record['equipment']![
-                                                'cause_of_need'] ??
-                                            ''),
-                                    DetailRow(
-                                        title: 'Equipment Size',
-                                        value:
-                                            "${record['equipment']!['size'] ?? ''}"),
-                                    DetailRow(
-                                        title: 'Registration Date',
-                                        value:
-                                            formatDate(record['created_at'])),
-                                  ],
-                                ),
-                                const SizedBox(height: 16),
-
-                                // ID Card Section
-                                GestureDetector(
-                                  onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => ImageOverlay(
-                                        imageUrl:
-                                            record['kebele_id_image'] ?? '',
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    height: 100,
-                                    width: 150,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[300],
-                                      borderRadius: BorderRadius.circular(8),
-                                      image: DecorationImage(
-                                        image: NetworkImage(
-                                            record['kebele_id_image'] ?? ''),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-                                const SizedBox(height: 16),
-
-                                // Warranty Dropdown
-                                WarrantyDropdown(
-                                    warrant: record['warrant'] ?? {}),
-                              ],
-                            ),
-                          ),
-
-                          const SizedBox(height: 16),
-
-                          // Buttons
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => RegisterRecord(
-                                        recordId: recordId,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.green,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                child: const Text('Edit'),
-                              ),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  final response = await ref
-                                      .read(disabilityRecordControllerProvider)
-                                      .deleteRecord(recordId);
-
-                                  showCustomSnackBar(context,
-                                      title: 'Success',
-                                      message: response,
-                                      type: AnimatedSnackBarType.success);
-
-                                  Navigator.pop(context);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                child: const Text('Delete'),
-                              ),
-                            ],
-                          ),
+                          Center(child:DetailRow(title: 'First Name', value: 'Abebe'),),
+                          DetailRow(title: 'Middle Name', value: 'Abebe'),
+                          DetailRow(title: 'Last Name', value: 'Abebe'),
+                          DetailRow(title: 'Gender', value: 'Male'),
+                          DetailRow(title: 'Age', value: '15',),
+                          DetailRow(title: 'Region', value: 'Amhara'),
+                          DetailRow(title: 'Zone', value: 'North Gondar'),
+                          DetailRow(title: 'Woreda', value: '2'),
+                          DetailRow(title: 'Hip Width', value: '15.7 cm'),
+                          DetailRow(title: 'Backrest Height', value: '15.2 cm'),
+                          DetailRow(title: 'Thigh Length', value: '17.5 cm'),
+                          DetailRow(title: 'Equipment Type', value: 'pediatric wheelchair'),
+                          DetailRow(title: 'Cause of need', value: 'Polio'),
+                          DetailRow(title: 'Equipment Size', value: 'XL'),
+                          DetailRow(title: 'Registration Date', value: '18/8/2024'),
                         ],
                       ),
-                    ),
+                      
+                      const SizedBox(height: 16),
+                      
+                      // ID Card Section
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => const ImageOverlay(
+                              imageUrl: 'https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_640.png',
+                            ),
+                          );
+                        },
+                        child: Container(
+                          height: 100,
+                          width: 150,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            borderRadius: BorderRadius.circular(8),
+                            image: const DecorationImage(
+                              image: NetworkImage('https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_640.png'),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ),
+                      
+                      const SizedBox(height: 16),
+                      
+                      // Warranty Dropdown
+                      WarrantyDropdown(),
+                    ],
                   ),
-                );
-              }
-            }));
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text('Edit'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text('Delete'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
+// Making phone numbers clickable
 class DetailRow extends StatelessWidget {
   final String title;
   final String value;
@@ -252,6 +165,8 @@ class DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isPhoneNumber = title.toLowerCase().contains("phone");
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -267,9 +182,8 @@ class DetailRow extends StatelessWidget {
           ),
           Expanded(
             flex: 2,
-            child: Text(
-              value,
-            ),
+            
+            child: Text(value,),
           ),
         ],
       ),
@@ -324,10 +238,6 @@ class ImageOverlay extends StatelessWidget {
 }
 
 class WarrantyDropdown extends StatefulWidget {
-  final Map<String, dynamic> warrant;
-
-  const WarrantyDropdown({required this.warrant});
-
   @override
   _WarrantyDropdownState createState() => _WarrantyDropdownState();
 }
@@ -367,20 +277,11 @@ class _WarrantyDropdownState extends State<WarrantyDropdown> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                DetailRow(
-                    title: 'First Name',
-                    value: widget.warrant['first_name'] ?? ''),
-                DetailRow(
-                    title: 'Middle Name',
-                    value: widget.warrant['middle_name'] ?? ''),
-                DetailRow(
-                    title: 'Last Name',
-                    value: widget.warrant['last_name'] ?? ''),
-                DetailRow(
-                    title: 'Gender', value: widget.warrant['gender'] ?? ''),
-                DetailRow(
-                    title: 'Phone Number',
-                    value: widget.warrant['phone_number'] ?? ''),
+                const DetailRow(title: 'First Name', value: 'Abebe'),
+                DetailRow(title: 'Middle Name', value: 'Abebe'),
+                DetailRow(title: 'Last Name', value: 'Abebe'),
+                DetailRow(title: 'Gender', value: 'Male'),
+                DetailRow(title: 'Phone Number', value: '0900...'),
                 GestureDetector(
                   onTap: () {
                     showDialog(

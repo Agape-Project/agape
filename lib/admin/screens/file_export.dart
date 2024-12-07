@@ -1,380 +1,243 @@
-//  return ConstrainedBox(
-//       constraints: const BoxConstraints(maxWidth: 450),
-//       child: Scaffold(
-//         appBar: AppBar(
-//           title: Text("Records"),
-//           centerTitle: true,
-//         ),
-//         body: SingleChildScrollView (
-//           child: Column(
-//             children: [
-//               Padding(
-//                 padding: const EdgeInsets.all(16.0),
-//                 child: Row(
-//                   children: [
-//                     Expanded(
-//                       child: TextField(
-//                         decoration: InputDecoration(
-//                           hintText: 'Search here',
-//                           border: OutlineInputBorder(
-//                             borderRadius: BorderRadius.circular(24),
-//                             borderSide: const BorderSide(color: primaryColor),
-//                           ),
-//                           prefixIcon: const Icon(Icons.search),
-//                         ),
-//                       ),
-//                     ),
-//                     const SizedBox(width: 8),
-//                     IconButton(
-//                       icon: const Icon(Icons.filter_alt_outlined),
-//                       onPressed: () {
-//                         _showFilterPopup(context);
-//                       },
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//               // List of user cards
-//               ListView.builder(
-//                 shrinkWrap: true,
-//                 physics: const NeverScrollableScrollPhysics(),
-//                 itemCount: 10, // Example count, replace with dynamic data count
-//                 itemBuilder: (context, index) {
-//                   return Padding(
-//                     padding: const EdgeInsets.symmetric(
-//                         horizontal: 8.0, vertical: 4.0),
-//                     child: GestureDetector(
-//                       onTap: () {
-//                         Navigator.push(
-//                           context,
-//                           MaterialPageRoute(
-//                             builder: (context) => UserDetailsPage(),
-//                           ),
-//                         );
-//                       },
-//                       child: Card(
-//                         elevation: 4,
-//                         shape: RoundedRectangleBorder(
-//                           borderRadius: BorderRadius.circular(8),
-//                         ),
-//                         child: Padding(
-//                           padding: const EdgeInsets.all(12.0),
-//                           child: Row(
-//                             children: [
-//                               // User image
-//                               CircleAvatar(
-//                                 radius: 30,
-//                                 backgroundColor: Colors.grey[300],
-//                                 child: Icon(Icons.person,
-//                                     size: 30, color: Colors.grey[700]),
-//                               ),
-//                               const SizedBox(width: 12),
-//                               // User details
-//                               const Expanded(
-//                                 child: Column(
-//                                   crossAxisAlignment: CrossAxisAlignment.start,
-//                                   children: [
-//                                     Text(
-//                                       'Abebe Abebe Abebe',
-//                                       style: TextStyle(
-//                                         fontWeight: FontWeight.bold,
-//                                         fontSize: 16,
-//                                       ),
-//                                     ),
-//                                     SizedBox(height: 4),
-//                                     Text(
-//                                       'Gender: Male', // Example, replace dynamically
-//                                       style: TextStyle(color: Colors.grey),
-//                                     ),
-//                                   ],
-//                                 ),
-//                               ),
-//                               // Status indicator
-//                               Text(
-//                                 index % 2 == 0 ? 'Pending' : 'Completed',
-//                                 style: TextStyle(
-//                                   color: index % 2 == 0
-//                                       ? Colors.orange
-//                                       : Colors.green,
-//                                   fontWeight: FontWeight.bold,
-//                                 ),
-//                               ),
-//                             ],
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   );
-//                 },
-//               ),
-//               // Pagination buttons
-//               Padding(
-//                 padding:
-//                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-//                 child: Row(
-//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                   children: [
-//                     ElevatedButton(
-//                       onPressed: () {
-//                         // Implement previous page logic
-//                       },
-//                       child: const Text('Back'),
-//                     ),
-//                     ElevatedButton(
-//                       onPressed: () {
-//                         // Implement next page logic
-//                       },
-//                       child: const Text('Next'),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
+import 'package:flutter/material.dart';
 
-//   void _showFilterPopup(BuildContext context) {
-//   String? selectedGender;
-//   String? selectedRegion;
-//   String? selectedSize;
-//   String? selectedMonth;
-//   String? selectedEquipmentType;
-//   int? selectedYear;
+class ExportPage extends StatefulWidget {
+  @override
+  _ExportPageState createState() => _ExportPageState();
+}
 
+class _ExportPageState extends State<ExportPage> {
+  // Simulated large dataset (can be replaced with database fetch)
+  final List<Map<String, dynamic>> allData = List.generate(1000, (index) {
+    return {
+      'First': 'First $index',
+      'Middle': 'Middle $index',
+      'Last': 'Last $index',
+      'Age': 20 + (index % 30),
+      'Gender': index % 2 == 0 ? 'Male' : 'Female',
+      'Region': 'Region ${index % 5}',
+      'Zone': 'Zone ${index % 10}',
+      'City': 'City ${index % 20}',
+      'Woreda': 'Woreda ${index % 15}',
+      'Equipment Type': 'Type ${index % 3}',
+      'Size': index % 3 == 0 ? 'Large' : 'Medium',
+      'Registration Date': '2024-01-${(index % 30) + 1}',
+    };
+  });
 
-//   final List<String> months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  int currentPage = 0;
+  final int rowsPerPage = 30;
 
+  // Map to track selected headers
+  Map<String, bool> selectedHeaders = {};
+  List<Map<String, dynamic>> filteredData = [];
+  String selectedFilter = 'None';
 
-//   showDialog(
-//     context: context,
-//     builder: (context) => StatefulBuilder(
-//       builder: (context, setState) {
-//         return AlertDialog(
-//           title: const Text('Filter Options'),
-//           content: SingleChildScrollView(
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               mainAxisSize: MainAxisSize.min,
-//               children: [
-//                 // Gender Filter
-               
-//                 DropdownButtonFormField<String>(
-//                   decoration: InputDecoration(
-//                     border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                     prefixIcon: Icon(Icons.person_outline),
-//                     labelText: 'Gender',
-//                   ),
-//                   items: ['Male', 'Female']
-//                       .map((label) => DropdownMenuItem(
-//                             value: label,
-//                             child: Text(label),
-//                           ))
-//                       .toList(),
-//                   onChanged: (value) {
-//                     setState(() {
-//                       selectedGender = value;
-//                     });
-//                   },
-//                   validator: (value) {
-//                     if (value == null) {
-//                       return 'Please select a gender';
-//                     }
-//                     return null;
-//                   },
-//                 ),
-//                 const SizedBox(height: 10),
+  @override
+  void initState() {
+    super.initState();
+    filteredData = allData; // Start with all data
+  }
 
-//                 // Region Filter
-               
-//                 DropdownButtonFormField<String>(
-//                   decoration: InputDecoration(
-//                     border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                     prefixIcon: Icon(Icons.person_outline),
-//                     labelText: 'Region',
-//                   ),
-//                   items: ['Addis Ababa', 'Oromia','Tigray','Afar','Amhara','Benishangul-Gumuz','Central Ethiopia','Dire Dawa','Gambela','Harari','Sidama','Somali','South Ethiopia',]
-//                       .map((label) => DropdownMenuItem(
-//                             value: label,
-//                             child: Text(label),
-//                           ))
-//                       .toList(),
-//                   onChanged: (value) {
-//                     setState(() {
-//                       selectedRegion = value;
-//                     });
-//                   },
-//                   validator: (value) {
-//                     // if (value == null) {
-//                     //   return 'Please select a gender';
-//                     // }
-//                     // return null;
-//                   },
-//                    menuMaxHeight: 200,
-//                 ),
-//                 const SizedBox(height: 10),
+  void applyFilter(String filterOption) {
+    setState(() {
+      if (filterOption == 'None') {
+        filteredData = allData;
+      } else {
+        filteredData = allData.where((row) {
+          return row['Region'] == filterOption;
+        }).toList();
+      }
+      currentPage = 0; // Reset to first page
+    });
+  }
 
-//                 // Size Filter
-             
-//                 DropdownButtonFormField<String>(
-//                   decoration: InputDecoration(
-//                     border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                     prefixIcon: Icon(Icons.person_outline),
-//                     labelText: 'Size',
-//                   ),
-//                   items: ['Small', 'Medium','Large','XL']
-//                       .map((label) => DropdownMenuItem(
-//                             value: label,
-//                             child: Text(label),
-//                           ))
-//                       .toList(),
-//                   onChanged: (value) {
-//                     setState(() {
-//                       selectedSize = value;
-//                     });
-//                   },
-//                   menuMaxHeight: 200,
-//                 ),
-//                 const SizedBox(height: 10),
+  @override
+  Widget build(BuildContext context) {
+    final displayedData = filteredData.skip(currentPage * rowsPerPage).take(rowsPerPage).toList();
 
-//                 // Month Filter
-               
-//                 DropdownButtonFormField<String>(
-//                    decoration: InputDecoration(
-//                     border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                     prefixIcon: Icon(Icons.person_outline),
-//                     labelText: 'Month',
-//                   ),
-//                   value: selectedMonth,
-//                   isExpanded: true,
-//                   hint: const Text('Select Month'),
-//                   items: months.map((month) {
-//                     return DropdownMenuItem(
-//                       value: month,
-//                       child: Text(month),
-//                     );
-//                   }).toList(),
-//                   onChanged: (value) {
-//                     setState(() {
-//                       selectedMonth = value;
-//                     });
-//                   },
-//                    menuMaxHeight: 200,
-//                 ),
-//                 const SizedBox(height: 10),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("File Export Page"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.filter_alt),
+            onPressed: () => _showFilterOptions(context),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: DataTable(
+                  columns: allData.first.keys.map((key) {
+                    return DataColumn(
+                      label: Row(
+                        children: [
+                          Checkbox(
+                            value: selectedHeaders[key] ?? false,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedHeaders[key] = value ?? false;
+                              });
+                            },
+                          ),
+                          Container(
+                            color: (selectedHeaders[key] ?? false)
+                                ? Colors.green
+                                : Colors.transparent,
+                            child: Text(
+                              key,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                  rows: displayedData.map((dataRow) {
+                    return DataRow(
+                      cells: dataRow.values.map((value) {
+                        return DataCell(Text(value.toString()));
+                      }).toList(),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (currentPage > 0)
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      currentPage--;
+                    });
+                  },
+                  child: Text("Back"),
+                ),
+              if ((currentPage + 1) * rowsPerPage < filteredData.length)
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      currentPage++;
+                    });
+                  },
+                  child: Text("Next"),
+                ),
+            ],
+          ),
+          Container(
+            color: Colors.white,
+            padding: EdgeInsets.all(16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    _showExportOptions(context);
+                  },
+                  child: const Row(
+                    children: [
+                      Icon(Icons.download),
+                      SizedBox(width: 8),
+                      Text("Export"),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-//                 // Year Filter
-               
-//                 ElevatedButton(
-//   style: ElevatedButton.styleFrom(
-//     foregroundColor: Colors.black,
-    
-//     shape: RoundedRectangleBorder(
-//       borderRadius: BorderRadius.circular(8), 
-//       side: BorderSide(color: const Color.fromARGB(255, 0, 0, 0)), 
-//     ),
-//     elevation: 0, 
-//   ),
-//   onPressed: () async {
-//     final currentYear = DateTime.now().year;
-//     final year = await showDatePicker(
-//       context: context,
-//       initialDate: DateTime(currentYear),
-//       firstDate: DateTime(2000),
-//       lastDate: DateTime(currentYear + 10),
-//       builder: (context, child) {
-//         return child!;
-//       },
-//     );
-//     if (year != null) {
-//       setState(() {
-//         selectedYear = year.year;
-//       });
-//     }
-//   },
-//   child: Text(
-//     selectedYear != null ? selectedYear.toString() : 'Select Year',
-//     style: const TextStyle(color: Colors.black), 
-//   ),
-// ),
+  void _showFilterOptions(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Select Filter"),
+          content: DropdownButton<String>(
+            value: selectedFilter,
+            items: ['None', 'Region 0', 'Region 1', 'Region 2', 'Region 3', 'Region 4']
+                .map((filter) => DropdownMenuItem(
+                      value: filter,
+                      child: Text(filter),
+                    ))
+                .toList(),
+            onChanged: (value) {
+              if (value != null) {
+                applyFilter(value);
+                setState(() {
+                  selectedFilter = value;
+                });
+                Navigator.pop(context);
+              }
+            },
+          ),
+        );
+      },
+    );
+  }
 
-//                 const SizedBox(height: 10),
+  void _showExportOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: Text("Export as CSV"),
+                onTap: () {
+                  _exportData("CSV");
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text("Export as Excel"),
+                onTap: () {
+                  _exportData("Excel");
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
-//                 // Equipment Type Filter
-                
-//                 DropdownButtonFormField<String>(
-//                   decoration: InputDecoration(
-//                     border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                     prefixIcon: Icon(Icons.person_outline),
-//                     labelText: 'Equipment Type',
-//                   ),
-//                   items: ['Pediatric Wheelchair', 'American Wheelchair','(FWP) Wheelchair','Walker','Crutches','Cane',]
-//                       .map((label) => DropdownMenuItem(
-//                             value: label,
-//                             child: Text(label),
-//                           ))
-//                       .toList(),
-//                   onChanged: (value) {
-//                     setState(() {
-//                       selectedEquipmentType = value;
-//                     });
-//                   },
-//                   validator: (value) {
-//                     // if (value == null) {
-//                     //   return 'Please select a gender';
-//                     // }
-//                     // return null;
-//                   },
-//                    menuMaxHeight: 200,
-//                 ),
-//               ],
-//             ),
-//           ),
-//           actions: [
-//             TextButton(
-//               onPressed: () {
-//                 Navigator.pop(context);
-//               },
-//               child: const Text('Cancel'),
-//             ),
-//             TextButton(
-//               onPressed: () {
-//                 // Apply filter logic
-//                 Navigator.pop(context);
-//               },
-//               child: const Text('Apply'),
-//             ),
-//           ],
-//         );
-//       },
-//     ),
-//   );
-// }
+  void _exportData(String fileType) {
+    final selectedColumns = selectedHeaders.entries
+        .where((entry) => entry.value)
+        .map((entry) => entry.key)
+        .toList();
 
-// }
+    // Simulate a backend call
+    Future.delayed(Duration(seconds: 2), () {
+      if (selectedColumns.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("No columns selected for export.")),
+        );
+        return;
+      }
 
-// class UserDetailsPage extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('User Details'),
-//       ),
-//       body: const Center(
-//         child: Text('User details page content'),
-//       ),
-//     );
-//   }
-// }
+      // Send selectedColumns and fileType to backend
+      print("Exporting as $fileType with columns: $selectedColumns");
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Data exported as $fileType successfully!")),
+      );
+    });
+  }
+}

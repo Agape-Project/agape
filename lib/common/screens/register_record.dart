@@ -827,12 +827,12 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                     labelText: 'First Name',
                     keyboardType: TextInputType.text,
                     prefixIcon: Icons.person,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your first name';
-                      }
-                      return null;
-                    },
+                    // validator: (value) {
+                    //   if (value == null || value.isEmpty) {
+                    //     return 'Please enter your first name';
+                    //   }
+                    //   return null;
+                    // },
                   ),
                   const SizedBox(height: 10),
                   CustomTextFormField(
@@ -840,12 +840,12 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                     labelText: 'MIddle Name',
                     keyboardType: TextInputType.text,
                     prefixIcon: Icons.person,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your middle name';
-                      }
-                      return null;
-                    },
+                    // validator: (value) {
+                    //   if (value == null || value.isEmpty) {
+                    //     return 'Please enter your middle name';
+                    //   }
+                    //   return null;
+                    // },
                   ),
                   const SizedBox(height: 10),
                   CustomTextFormField(
@@ -853,12 +853,12 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                     labelText: 'Last Name',
                     keyboardType: TextInputType.text,
                     prefixIcon: Icons.person,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your last name';
-                      }
-                      return null;
-                    },
+                    // validator: (value) {
+                    //   if (value == null || value.isEmpty) {
+                    //     return 'Please enter your last name';
+                    //   }
+                    //   return null;
+                    // },
                   ),
                   const SizedBox(height: 10),
                   Column(
@@ -902,17 +902,17 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                     keyboardType: TextInputType.number,
                     prefixIcon: Icons.phone,
                     // keyboardType: TextInputType.phone,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your phone number';
-                      } else if (value.length > 10 || value.length < 10) {
-                        return 'Phone mumber must be 10 digits';
-                      } else if (!RegExp(r'^(09|07)[0-9]{8}$')
-                          .hasMatch(value)) {
-                        return 'Please start  with 09 or 07 ';
-                      }
-                      return null;
-                    },
+                    // validator: (value) {
+                    //   if (value == null || value.isEmpty) {
+                    //     return 'Please enter your phone number';
+                    //   } else if (value.length > 10 || value.length < 10) {
+                    //     return 'Phone mumber must be 10 digits';
+                    //   } else if (!RegExp(r'^(09|07)[0-9]{8}$')
+                    //       .hasMatch(value)) {
+                    //     return 'Please start  with 09 or 07 ';
+                    //   }
+                    //   return null;
+                    // },
                   ),
                   SizedBox(height: 5),
                   const Text(" ID Photo",

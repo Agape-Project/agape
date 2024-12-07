@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:agape/auth/repository/token_manager.dart';
 
+import 'package:path/path.dart';
+
 final disabilityRecordRepositoryProvider =
     Provider((ref) => DisabilityRecordRepository());
 
@@ -87,16 +89,40 @@ class DisabilityRecordRepository {
 
     recordData.forEach((key, value) async {
       if (value is File) {
-        request.files.add(await http.MultipartFile.fromPath(key, value.path));
-      } else if (value is Map<String, dynamic>) {
-        processNestedMap(key, value);
+      } else if (value is Map) {
+        request.fields[key] = jsonEncode(value);
       } else {
         request.fields[key] = value.toString();
       }
     });
 
-    final response = await request.send();
+    if (recordData['profile_image'] != null &&
+        recordData['profile_image'] is File) {
+      request.files.add(
+        await http.MultipartFile.fromPath(
+            'profile_image', recordData['profile_image'].path),
+      );
+    }
+    if (recordData['kebele_id_image'] != null &&
+        recordData['kebele_id_image'] is File) {
+      request.files.add(
+        await http.MultipartFile.fromPath(
+            'kebele_id_image', recordData['kebele_id_image'].path),
+      );
+    }
+    if (recordData['warrant'] != null &&
+        recordData['warrant'] is Map &&
+        recordData['warrant']['id_image'] != null &&
+        recordData['warrant']['id_image'] is File) {
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'warrant_id_image',
+          (recordData['warrant']['id_image'] as File).path,
+        ),
+      );
+    }
 
+    final response = await request.send();
     final responseBody = await response.stream.bytesToString();
 
     if (response.statusCode == 201) {
