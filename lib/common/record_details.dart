@@ -77,9 +77,11 @@ class RecordDetailsPage extends ConsumerWidget {
                                   },
                                   child: CircleAvatar(
                                     radius: 50,
-                                    backgroundImage: NetworkImage(
-                                      record['profile_image'] ?? '',
-                                    ),
+                                    backgroundImage: record['profile_image'] !=
+                                            null
+                                        ? NetworkImage(record['profile_image'])
+                                        : const NetworkImage(
+                                            'https://via.placeholder.com/150'),
                                   ),
                                 ),
                                 const SizedBox(height: 16),
@@ -131,18 +133,18 @@ class RecordDetailsPage extends ConsumerWidget {
                                             "${record['thigh_length'] ?? ''} cm"),
                                     DetailRow(
                                         title: 'Equipment Type',
-                                        value: record['equipment']![
-                                                'equipment_type'] ??
+                                        value: record['equipment']
+                                                ?['equipment_type'] ??
                                             ''),
                                     DetailRow(
                                         title: 'Cause of need',
-                                        value: record['equipment']![
-                                                'cause_of_need'] ??
+                                        value: record['equipment']
+                                                ?['cause_of_need'] ??
                                             ''),
                                     DetailRow(
                                         title: 'Equipment Size',
                                         value:
-                                            "${record['equipment']!['size'] ?? ''}"),
+                                            "${record['equipment']?['size'] ?? ''}"),
                                     DetailRow(
                                         title: 'Registration Date',
                                         value:
@@ -169,8 +171,11 @@ class RecordDetailsPage extends ConsumerWidget {
                                       color: Colors.grey[300],
                                       borderRadius: BorderRadius.circular(8),
                                       image: DecorationImage(
-                                        image: NetworkImage(
-                                            record['kebele_id_image'] ?? ''),
+                                        image: record['kebele_id_image'] != null
+                                            ? NetworkImage(
+                                                record['kebele_id_image'])
+                                            : const NetworkImage(
+                                                'https://via.placeholder.com/150'),
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -178,7 +183,6 @@ class RecordDetailsPage extends ConsumerWidget {
                                 ),
 
                                 const SizedBox(height: 16),
-
                                 // Warranty Dropdown
                                 WarrantyDropdown(
                                     warrant: record['warrant'] ?? {}),
