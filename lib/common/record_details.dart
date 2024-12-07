@@ -25,6 +25,7 @@ class RecordDetailsPage extends ConsumerWidget {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Record Details'),
+          centerTitle: true,
         ),
         body: FutureBuilder<Map<String, dynamic>>(
             future: fetchRecord(),
@@ -145,8 +146,7 @@ class RecordDetailsPage extends ConsumerWidget {
                                     DetailRow(
                                         title: 'Registration Date',
                                         value:
-                                            formatDate(record['created_at']) ??
-                                                ''),
+                                            formatDate(record['created_at'])),
                                   ],
                                 ),
                                 const SizedBox(height: 16),
