@@ -85,7 +85,7 @@ class _UserListPageState extends ConsumerState<UserListPage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          UserDetailsPage(record: record),
+                                          RecordDetailsPage(recordId: record['id']),
                                     ),
                                   );
                                 },
