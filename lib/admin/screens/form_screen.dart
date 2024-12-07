@@ -363,8 +363,8 @@ class _SubAdminFormState extends ConsumerState<SubAdminForm> {
                   ),
               ],
             )
-          : const Center(
-              child: CircularProgressIndicator(),
+          :  Center(
+              child: LoadingIndicatorWidget(),
             ),
     );
   }
