@@ -52,6 +52,15 @@ class DisabilityRecordController {
       rethrow;
     }
   }
+// filter records by query
+  Future<List<Map<String, dynamic>>> filterRecords(String query) async {
+    try {
+      final response = await disabilityRecordRepository.filterRecords(query);
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
   
   Future<String> deleteRecord(String id) async {
     try {
