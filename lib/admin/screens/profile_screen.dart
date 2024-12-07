@@ -72,75 +72,102 @@ class ProfileScreen extends ConsumerWidget {
                   color: Colors.black,
                 ),
               ),
+              const SizedBox(height: 10),
+              Text(
+                "Email: ${user['email'] ?? "Unknown Email"}",
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "Phone Number: ${user['phone_number'] ?? "Unknown Phone Number"}",
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                "Role: ${user['role'] == "admin"? "Admin" :"Sub Admin"}",
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                ),
+              ),
               const SizedBox(height: 40),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Edit Profile button
-                    SizedBox(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(
-                                255, 9, 19, 58), // Blue-black color
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Edit Profile button
+                      Expanded(
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color.fromARGB(
+                                  255, 9, 19, 58), // Blue-black color
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          SubAdminForm(userId: user['id'])));
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 6),
+                              child: Text(
+                                "EDIT PROFILE",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
                             ),
                           ),
-                          onPressed: () {
-                            Navigator.push(
+                        ),
+                      
+                      const SizedBox(width: 20),
+                       Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              side: const BorderSide(
+                                  color: Color.fromARGB(255, 9, 19, 58)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        SubAdminForm(userId: user['id'])));
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 6),
-                            child: Text(
-                              "EDIT PROFILE",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
+                                        PasswordChangePage(userId: user["id"])),
+                              );
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 6),
+                              child: Text(
+                                "CHANGE PASSWORD",
+                                style: TextStyle(
+                                  color: Color(0xFF1A237E),
+                                  fontSize: 12,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    
-                    const SizedBox(width: 20),
-                     SizedBox(
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(
-                                color: Color.fromARGB(255, 9, 19, 58)),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      PasswordChangePage(userId: user["id"])),
-                            );
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 6),
-                            child: Text(
-                              "CHANGE PASSWORD",
-                              style: TextStyle(
-                                color: Color(0xFF1A237E),
-                                fontSize: 12,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    
-                  ],
+                      
+                    ],
+                  ),
                 ),
               ),
             ],
