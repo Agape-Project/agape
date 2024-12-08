@@ -1,6 +1,8 @@
 import 'package:agape/auth/controllers/auth_controller.dart';
 import 'package:agape/utils/colors.dart';
 import 'package:agape/widgets/loading_animation_widget.dart';
+import 'package:agape/widgets/snackbar.dart';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -26,32 +28,9 @@ class BlockedAdmins extends ConsumerWidget {
           constraints: const BoxConstraints(maxWidth: 600),
           child: Column(
             children: [
-              // Padding(
-              //   padding: const EdgeInsets.all(16.0),
-              //   child: TextField(
-              //     decoration: InputDecoration(
-              //       hintText: 'Search for sub-admins...',
-              //       hintStyle: TextStyle(color: Colors.grey[500], fontSize: 16),
-              //       prefixIcon: Icon(Icons.search, color: primaryColor),
-              //       filled: true,
-              //       fillColor: Colors.grey[100],
-              //       border: OutlineInputBorder(
-              //         borderRadius: BorderRadius.circular(30),
-              //         borderSide: BorderSide.none,
-              //       ),
-              //       focusedBorder: OutlineInputBorder(
-              //         borderRadius: BorderRadius.circular(30),
-              //         borderSide:
-              //             const BorderSide(color: primaryColor, width: 2),
-              //       ),
-              //       contentPadding: const EdgeInsets.symmetric(
-              //           vertical: 14, horizontal: 20),
-              //     ),
-              //   ),
-              // ),
               Expanded(
                 child: FutureBuilder<List<Map<String, dynamic>>>(
-                  future: authController.getUsers(),
+                  future: authController.getBlockedUsers(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return LoadingIndicatorWidget();
@@ -79,26 +58,16 @@ class BlockedAdmins extends ConsumerWidget {
           ),
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: primaryColor,
-      //   foregroundColor: Colors.white,
-      //   onPressed: () {
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(
-      //           builder: (context) => const SubAdminForm(
-      //                 userId: null,
-      //               )),
-      //     );
-      //   },
-      //   child: const Icon(Icons.add),
-      // ),
     );
   }
 
   Widget _buildUserCard(
       BuildContext context, WidgetRef ref, Map<String, dynamic> user) {
-    String userId = user['id'];
+    final String userId = user['id'] ?? 'N/A';
+    final String firstName = user['first_name'] ?? 'Unknown';
+    final String lastName = user['last_name'] ?? '';
+    final String role = user['role'] ?? 'Unknown';
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
       color: Colors.white,
@@ -112,28 +81,51 @@ class BlockedAdmins extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "${user['first_name']} ${user['last_name']}",
+                  '$firstName $lastName',
                   style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.w500),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(height: 8),
                 Text(
-                  user['role'],
+                  role,
                   style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                 ),
               ],
             ),
-            const SizedBox(width: 10),
             Row(
               children: [
                 ElevatedButton(
                   onPressed: () async {
-                    await ref
-                        .read(authControllerProvider)
-                        .blockOrUnblockUser(userId);
-                  },    
+                    try {
+                      await ref
+                          .read(authControllerProvider)
+                          .blockOrUnblockUser(userId);
+                      showCustomSnackBar(context,
+                          title: 'Success',
+                          message: 'User unblocked successfully!',
+                          type: AnimatedSnackBarType.success);
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   const SnackBar(
+                      //     content: Text('User unblocked successfully!'),
+                      //     duration: Duration(seconds: 2),
+                      //   ),
+                      // );
+                    } catch (e) {
+                      showCustomSnackBar(context,
+                          title: 'Error',
+                          message: 'Failed to unblock user: $e',
+                          type: AnimatedSnackBarType.error);
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   SnackBar(
+                      //     content: Text('Failed to unblock user: $e'),
+                      //     duration: const Duration(seconds: 2),
+                      //   ),
+                      // );
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
                     shape: RoundedRectangleBorder(
@@ -147,13 +139,31 @@ class BlockedAdmins extends ConsumerWidget {
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
-                  onPressed: () {
-                    
-                    () async {
-                      await ref
-                          .read(authControllerProvider)
-                          .deleteUser(userId);
-                    };
+                  onPressed: () async {
+                    try {
+                      await ref.read(authControllerProvider).deleteUser(userId);
+                      showCustomSnackBar(context,
+                          title: 'Success',
+                          message: 'User deleted successfully!',
+                          type: AnimatedSnackBarType.success);
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   const SnackBar(
+                      //     content: Text('User deleted successfully!'),
+                      //     duration: Duration(seconds: 2),
+                      //   ),
+                      // );
+                    } catch (e) {
+                       showCustomSnackBar(context,
+                          title: 'Error',
+                          message: 'Failed to delete user: $e',
+                          type: AnimatedSnackBarType.error);
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   SnackBar(
+                      //     content: Text('Failed to delete user: $e'),
+                      //     duration: const Duration(seconds: 2),
+                      //   ),
+                      // );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 255, 0, 0),
@@ -163,9 +173,7 @@ class BlockedAdmins extends ConsumerWidget {
                   ),
                   child: const Text(
                     'Delete',
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Color.fromARGB(255, 255, 255, 255)),
+                    style: TextStyle(fontSize: 14, color: Colors.white),
                   ),
                 ),
               ],
