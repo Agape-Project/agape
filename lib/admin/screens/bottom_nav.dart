@@ -20,7 +20,7 @@ class _AdminNavigationState extends ConsumerState<AdminNavigation> {
  final List<Widget>  _pages = [
       const AdminHome(),
       UserListPage(),
-       DashboardStats(),
+      DashboardStats(),
       ExportPage(),
       SettingScreen(),
 
