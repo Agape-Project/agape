@@ -71,15 +71,15 @@ class RecordDetailsPage extends ConsumerWidget {
                                     showDialog(
                                       context: context,
                                       builder: (context) => ImageOverlay(
-                                        imageUrl: record['profile_image'] ?? '',
+                                        imageUrl: record['profile_image_url'] ?? '',
                                       ),
                                     );
                                   },
                                   child: CircleAvatar(
                                     radius: 50,
-                                    backgroundImage: record['profile_image'] !=
+                                    backgroundImage: record['profile_image_url'] !=
                                             null
-                                        ? NetworkImage(record['profile_image'])
+                                        ? NetworkImage(record['profile_image_url'])
                                         : const NetworkImage(
                                             'https://via.placeholder.com/150'),
                                   ),
@@ -160,7 +160,7 @@ class RecordDetailsPage extends ConsumerWidget {
                                       context: context,
                                       builder: (context) => ImageOverlay(
                                         imageUrl:
-                                            record['kebele_id_image'] ?? '',
+                                            record['kebele_id_image_url'] ?? '',
                                       ),
                                     );
                                   },
@@ -171,9 +171,9 @@ class RecordDetailsPage extends ConsumerWidget {
                                       color: Colors.grey[300],
                                       borderRadius: BorderRadius.circular(8),
                                       image: DecorationImage(
-                                        image: record['kebele_id_image'] != null
+                                        image: record['kebele_id_image_url'] != null
                                             ? NetworkImage(
-                                                record['kebele_id_image'])
+                                                record['kebele_id_image_url'])
                                             : const NetworkImage(
                                                 'https://via.placeholder.com/150'),
                                         fit: BoxFit.cover,
@@ -390,7 +390,7 @@ class _WarrantyDropdownState extends State<WarrantyDropdown> {
                     showDialog(
                       context: context,
                       builder: (context) => ImageOverlay(
-                        imageUrl: widget.warrant['id_image'] ?? '',
+                        imageUrl: widget.warrant['id_image_url'] ?? '',
                       ),
                     );
                   },
@@ -401,7 +401,7 @@ class _WarrantyDropdownState extends State<WarrantyDropdown> {
                       color: Colors.grey[300],
                       borderRadius: BorderRadius.circular(8),
                       image: DecorationImage(
-                        image: NetworkImage(widget.warrant['id_image'] ?? ''),
+                        image: NetworkImage(widget.warrant['id_image_url'] ?? ''),
                         fit: BoxFit.cover,
                       ),
                     ),
