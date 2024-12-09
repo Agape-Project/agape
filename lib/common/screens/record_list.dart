@@ -3,6 +3,7 @@ import 'package:agape/common/record_details.dart';
 import 'package:agape/utils/colors.dart';
 import 'package:agape/widgets/loading_animation_widget.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class UserListPage extends ConsumerStatefulWidget {
@@ -12,16 +13,61 @@ class UserListPage extends ConsumerStatefulWidget {
 
 class _UserListPageState extends ConsumerState<UserListPage> {
   late Future<List<Map<String, dynamic>>> _userRecords;
+  final TextEditingController _searchController = TextEditingController();
+  Timer? _debounce;
+
+  String? selectedGender;
+  String? selectedRegion;
+  String? selectedMonth;
+  String? selectedEquipmentType;
+  int? selectedYear;
 
   @override
   void initState() {
     super.initState();
     _fetchUserRecords();
+    _searchController.addListener(_onSearchChanged);
   }
 
-  void _fetchUserRecords() {
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      _fetchUserRecords(query: _searchController.text);
+    });
+  }
+
+  void _fetchUserRecords({String query = ''}) {
     final recordController = ref.read(disabilityRecordControllerProvider);
-    _userRecords = recordController.getAllRecords();
+    if (query.isEmpty) {
+      _userRecords = recordController.getAllRecords();
+    } else {
+      _userRecords = recordController.searchRecords(query);
+    }
+    setState(() {});
+  }
+
+void _fetchFilteredRecords() async{
+     final recordController = ref.read(disabilityRecordControllerProvider);
+  try {
+    _userRecords = Future.value(await recordController.filterRecords(
+      gender: selectedGender,
+      region: selectedRegion,
+      month: selectedMonth,
+      equipmentType: selectedEquipmentType,
+      year: selectedYear,
+    ));
+    setState(() {}); 
+  } catch (e) {
+    print('Error fetching records: $e');
+  }
   }
 
   @override
@@ -50,6 +96,7 @@ class _UserListPageState extends ConsumerState<UserListPage> {
                           children: [
                             Expanded(
                               child: TextField(
+                                controller: _searchController,
                                 decoration: InputDecoration(
                                   hintText: 'Search here',
                                   border: OutlineInputBorder(
@@ -84,8 +131,8 @@ class _UserListPageState extends ConsumerState<UserListPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          RecordDetailsPage(recordId: record['id']),
+                                      builder: (context) => RecordDetailsPage(
+                                          recordId: record['id']),
                                     ),
                                   );
                                 },
@@ -161,234 +208,230 @@ class _UserListPageState extends ConsumerState<UserListPage> {
   }
 
   void _showFilterPopup(BuildContext context) {
-  String? selectedGender;
-  String? selectedRegion;
-  String? selectedSize;
-  String? selectedMonth;
-  String? selectedEquipmentType;
-  int? selectedYear;
+    final List<String> months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ];
 
-
-  final List<String> months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-
-  showDialog(
-    context: context,
-    builder: (context) => StatefulBuilder(
-      builder: (context, setState) {
-        return AlertDialog(
-          title: const Text('Filter Options'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Gender Filter
-               
-                DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    prefixIcon: Icon(Icons.person_outline),
-                    labelText: 'Gender',
-                  ),
-                  items: ['Male', 'Female']
-                      .map((label) => DropdownMenuItem(
-                            value: label,
-                            child: Text(label),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedGender = value;
-                    });
-                  },
-                  validator: (value) {
-                    if (value == null) {
-                      return 'Please select a gender';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 10),
-
-                // Region Filter
-               
-                DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    prefixIcon: Icon(Icons.person_outline),
-                    labelText: 'Region',
-                  ),
-                  items: ['Addis Ababa', 'Oromia','Tigray','Afar','Amhara','Benishangul-Gumuz','Central Ethiopia','Dire Dawa','Gambela','Harari','Sidama','Somali','South Ethiopia',]
-                      .map((label) => DropdownMenuItem(
-                            value: label,
-                            child: Text(label),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedRegion = value;
-                    });
-                  },
-                  validator: (value) {
-                    // if (value == null) {
-                    //   return 'Please select a gender';
-                    // }
-                    // return null;
-                  },
-                   menuMaxHeight: 200,
-                ),
-                const SizedBox(height: 10),
-
-                // Size Filter
-             
-                DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    prefixIcon: Icon(Icons.person_outline),
-                    labelText: 'Size',
-                  ),
-                  items: ['Small', 'Medium','Large','XL']
-                      .map((label) => DropdownMenuItem(
-                            value: label,
-                            child: Text(label),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedSize = value;
-                    });
-                  },
-                  menuMaxHeight: 200,
-                ),
-                const SizedBox(height: 10),
-
-                // Month Filter
-               
-                DropdownButtonFormField<String>(
-                   decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    prefixIcon: Icon(Icons.person_outline),
-                    labelText: 'Month',
-                  ),
-                  value: selectedMonth,
-                  isExpanded: true,
-                  hint: const Text('Select Month'),
-                  items: months.map((month) {
-                    return DropdownMenuItem(
-                      value: month,
-                      child: Text(month),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedMonth = value;
-                    });
-                  },
-                   menuMaxHeight: 200,
-                ),
-                const SizedBox(height: 10),
-
-                // Year Filter
-               
-                ElevatedButton(
-  style: ElevatedButton.styleFrom(
-    foregroundColor: Colors.black,
-    
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8), 
-      side: BorderSide(color: const Color.fromARGB(255, 0, 0, 0)), 
-    ),
-    elevation: 0, 
-  ),
-  onPressed: () async {
-    final currentYear = DateTime.now().year;
-    final year = await showDatePicker(
+    showDialog(
       context: context,
-      initialDate: DateTime(currentYear),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(currentYear + 10),
-      builder: (context, child) {
-        return child!;
-      },
-    );
-    if (year != null) {
-      setState(() {
-        selectedYear = year.year;
-      });
-    }
-  },
-  child: Text(
-    selectedYear != null ? selectedYear.toString() : 'Select Year',
-    style: const TextStyle(color: Colors.black), 
-  ),
-),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: const Text('Filter Options'),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Gender Filter
 
-                const SizedBox(height: 10),
-
-                // Equipment Type Filter
-                
-                DropdownButtonFormField<String>(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                  DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      prefixIcon: Icon(Icons.person_outline),
+                      labelText: 'Gender',
                     ),
-                    prefixIcon: Icon(Icons.person_outline),
-                    labelText: 'Equipment Type',
+                    items: ['Male', 'Female']
+                        .map((label) => DropdownMenuItem(
+                              value: label,
+                              child: Text(label),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedGender = value;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Please select a gender';
+                      }
+                      return null;
+                    },
                   ),
-                  items: ['Pediatric Wheelchair', 'American Wheelchair','(FWP) Wheelchair','Walker','Crutches','Cane',]
-                      .map((label) => DropdownMenuItem(
-                            value: label,
-                            child: Text(label),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedEquipmentType = value;
-                    });
-                  },
-                  validator: (value) {
-                    // if (value == null) {
-                    //   return 'Please select a gender';
-                    // }
-                    // return null;
-                  },
-                   menuMaxHeight: 200,
-                ),
-              ],
+                  const SizedBox(height: 10),
+
+                  // Region Filter
+
+                  DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      prefixIcon: Icon(Icons.person_outline),
+                      labelText: 'Region',
+                    ),
+                    items: [
+                      'Addis Ababa',
+                      'Oromia',
+                      'Tigray',
+                      'Afar',
+                      'Amhara',
+                      'Benishangul-Gumuz',
+                      'Central Ethiopia',
+                      'Dire Dawa',
+                      'Gambela',
+                      'Harari',
+                      'Sidama',
+                      'Somali',
+                      'South Ethiopia',
+                    ]
+                        .map((label) => DropdownMenuItem(
+                              value: label,
+                              child: Text(label),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRegion = value;
+                      });
+                    },
+                    menuMaxHeight: 200,
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Month Filter
+
+                  DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      prefixIcon: Icon(Icons.person_outline),
+                      labelText: 'Month',
+                    ),
+                    value: selectedMonth,
+                    isExpanded: true,
+                    hint: const Text('Select Month'),
+                    items: months.map((month) {
+                      return DropdownMenuItem(
+                        value: month,
+                        child: Text(month),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedMonth = value;
+                      });
+                    },
+                    menuMaxHeight: 200,
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Year Filter
+
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(
+                            color: const Color.fromARGB(255, 0, 0, 0)),
+                      ),
+                      elevation: 0,
+                    ),
+                    onPressed: () async {
+                      final currentYear = DateTime.now().year;
+                      final year = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime(currentYear),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(currentYear + 10),
+                        builder: (context, child) {
+                          return child!;
+                        },
+                      );
+                      if (year != null) {
+                        setState(() {
+                          selectedYear = year.year;
+                        });
+                      }
+                    },
+                    child: Text(
+                      selectedYear != null
+                          ? selectedYear.toString()
+                          : 'Select Year',
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  // Equipment Type Filter
+
+                  DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      prefixIcon: Icon(Icons.person_outline),
+                      labelText: 'Equipment Type',
+                    ),
+                    items: [
+                      'Pediatric Wheelchair',
+                      'American Wheelchair',
+                      '(FWP) Wheelchair',
+                      'Walker',
+                      'Crutches',
+                      'Cane',
+                    ]
+                        .map((label) => DropdownMenuItem(
+                              value: label,
+                              child: Text(label),
+                            ))
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        selectedEquipmentType = value;
+                      });
+                    },
+                    validator: (value) {
+                      // if (value == null) {
+                      //   return 'Please select a gender';
+                      // }
+                      // return null;
+                    },
+                    menuMaxHeight: 200,
+                  ),
+                ],
+              ),
             ),
-          ),
-          actions: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    // Apply filter logic
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Apply'),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    ),
-  );
-}
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      _fetchFilteredRecords();
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Apply'),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
 }
