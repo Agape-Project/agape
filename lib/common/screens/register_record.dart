@@ -77,7 +77,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
           _selectedGender = record['gender'] ?? null;
           _dateController.text = record['date_of_birth'] ?? '';
           _phoneController.text = record['phone_number'] ?? '';
-          _selectedRegion = record['region'] ?? null;
+          _selectedRegion = record['region'];
           _zoneController.text = record['zone'] ?? '';
           _cityController.text = record['city'] ?? '';
           _woredaController.text = record['woreda'] ?? '';
@@ -447,19 +447,19 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                       child: Text('Amhara'),
                     ),
                     DropdownMenuItem(
-                      value: 'Benishangul_Gumuz ',
+                      value: 'Benishangul-Gumuz',
                       child: Text('Benishangul-Gumuz'),
                     ),
                     DropdownMenuItem(
-                      value: 'Central_Ethiopia ',
+                      value: 'Central Ethiopia',
                       child: Text('Central Ethiopia'),
                     ),
                     DropdownMenuItem(
-                      value: 'Dire_Dawa ',
+                      value: 'Dire Dawa',
                       child: Text('Dire Dawa'),
                     ),
                     DropdownMenuItem(
-                      value: 'Gambela ',
+                      value: 'Gambela',
                       child: Text('Gambela'),
                     ),
                     DropdownMenuItem(
@@ -589,12 +589,12 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                     DropdownButtonFormField<String>(
                       value: _selectedEquipmentType,
                       items: [
-                        'Pediatric Wheelchair',
-                        'American Wheelchair',
-                        '(FWP) Wheelchair',
-                        'Walker',
-                        'Crutches',
-                        'Cane',
+                        'Pediatric_Wheelchair',
+                        'american_Wheelchair',
+                        'FWP_Wheelchair',
+                        'walker',
+                        'crutches',
+                        'cane',
                       ]
                           .map(
                               (e) => DropdownMenuItem(value: e, child: Text(e)))
@@ -603,7 +603,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                         setState(() {
                           _selectedEquipmentType = value;
                           if (_selectedEquipmentType !=
-                              "Pediatric Wheelchair") {
+                              "Pediatric_Wheelchair") {
                             _selectedCause =
                                 null; // Reset dropdown if Pediatric is deselected
                             _customCause =
@@ -624,7 +624,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                     const SizedBox(height: 10),
 
                     // Cause Dropdown (Visible only if Pediatric Wheelchair is selected)
-                    if (_selectedEquipmentType == "Pediatric Wheelchair") ...[
+                    if (_selectedEquipmentType == "Pediatric_Wheelchair") ...[
                       // const Text("Cause of Need"),
 
                       DropdownButtonFormField<String>(
@@ -951,7 +951,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                   const SizedBox(height: 20),
                   MyButtons(
                     onTap: _submitData,
-                    text: widget.recordId == null ? "Register" : "Update",
+                    text: widget.recordId != null ?   "Update" : "Register",
                   ),
                 ])))
         // Add additional steps as required...

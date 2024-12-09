@@ -202,7 +202,7 @@ class RecordDetailsPage extends ConsumerWidget {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => RegisterRecord(
-                                        recordId: recordId,
+                                        recordId: record['id'],
                                       ),
                                     ),
                                   );

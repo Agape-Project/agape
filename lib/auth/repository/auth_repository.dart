@@ -54,6 +54,7 @@ class AuthRepository {
     }
   }
 
+//get unblocked admins
   Future<List<Map<String, dynamic>>> getUsers() async {
     final url = Uri.parse('$baseUrl/api/users/');
     final token = await TokenManager.getAccessToken();
@@ -83,6 +84,45 @@ class AuthRepository {
           jsonDecode(response.body)['detail'] ?? 'Error fetching users');
     }
   }
+//get Blocked admins
+Future<List<Map<String, dynamic>>> getBlockedUsers() async {
+  final url = Uri.parse('$baseUrl/api/users/blocked/');
+  final token = await TokenManager.getAccessToken();
+
+  final response = await http.get(
+    url,
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": token != null ? "Bearer $token" : "",
+    },
+  );
+
+  print('Response Status Code: ${response.statusCode}');
+  print('Response Body: ${response.body}');
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+
+    // Try to retrieve users from different response formats
+    List<dynamic>? users;
+
+    if (data['data'] is List) {
+      users = data['data'];
+    } else if (data['results']?['data'] is List) {
+      users = data['results']['data'];
+    }
+
+    if (users == null || users.isEmpty) {
+      throw Exception('No users found in the response');
+    }
+
+    print('Parsed Users: $users');
+    return List<Map<String, dynamic>>.from(users);
+  } else {
+    throw Exception(
+        jsonDecode(response.body)['detail'] ?? 'Error fetching users');
+  }
+}
 
 //get user by id
   Future<Map<String, dynamic>> getUserById(String id) async {
@@ -109,7 +149,7 @@ class AuthRepository {
     }
   }
 
-  // block and unblock user by id patch request
+  // block  user by id patch request
   Future<String> blockUnblockUser(String id) async {
     final url = Uri.parse('$baseUrl/api/users/$id/block/');
     final token = await TokenManager.getAccessToken();
@@ -127,6 +167,8 @@ class AuthRepository {
           jsonDecode(response.body)['detail'] ?? 'Error blocking user');
     }
   }
+
+  
 
   // delete user by id
   Future<String> deleteUser(String id) async {

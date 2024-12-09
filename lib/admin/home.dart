@@ -146,7 +146,7 @@ backgroundColor: secondaryColor,
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const RegisterRecord(recordId: '')), 
+                      MaterialPageRoute(builder: (context) => const RegisterRecord(recordId: null)), 
                     );
                   },
                    child: Container(

@@ -36,7 +36,16 @@ class AuthController {
       rethrow;
     }
   }
-
+//get blocked admins and subadmins
+  Future<List<Map<String, dynamic>>> getBlockedUsers() async {
+    try {
+      final response = await authRepository.getBlockedUsers();
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+  //get unblocked admins and subadmins
   Future<List<Map<String, dynamic>>> getUsers() async {
     try {
       final response = await authRepository.getUsers();

@@ -3,6 +3,8 @@ import 'package:agape/admin/screens/subadmin_details.dart';
 import 'package:agape/auth/controllers/auth_controller.dart';
 import 'package:agape/utils/colors.dart';
 import 'package:agape/widgets/loading_animation_widget.dart';
+import 'package:agape/widgets/snackbar.dart';
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -115,7 +117,7 @@ class ManageSubAdmin extends ConsumerWidget {
               children: [
                 Text(
                   "${user['first_name']} ${user['last_name']}",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(width: 8),
                 Text(
@@ -130,6 +132,10 @@ class ManageSubAdmin extends ConsumerWidget {
                 ElevatedButton(
                   onPressed: () async {
                     await ref.read(authControllerProvider).blockOrUnblockUser(userId);
+                    showCustomSnackBar(context,
+                          title: 'Success',
+                          message: 'User blocked successfully!',
+                          type: AnimatedSnackBarType.success);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
