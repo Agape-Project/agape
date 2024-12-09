@@ -1,97 +1,165 @@
+import 'package:agape/common/controllers/record_controller.dart';
 import 'package:agape/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DashboardStats extends StatelessWidget {
+class DashboardStats extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {},
-        ),
-        backgroundColor: Colors.deepPurple,
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          double width = constraints.maxWidth;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final statsAsyncValue = ref.watch(statsProvider);
 
-          return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  GridView.count(
-                    shrinkWrap: true,
-                    crossAxisCount: width > 600 ? 4 : 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: width > 600 ? 3 / 2 : 2 / 2.3,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: const [
-                      DashboardCard(
-                        icon: Icons.people,
-                        count: "255",
-                        label: "Total Records",
-                        color: Colors.green,
-                      ),
-                      DashboardCard(
-                        icon: Icons.wheelchair_pickup,
-                        count: "185",
-                        label: "Total Wheelchair",
-                        color: Colors.green,
-                      ),
-                      DashboardCard(
-                        icon: Icons.group,
-                        count: "5",
-                        label: "Sub Admins",
-                        color: Colors.green,
-                      ),
-                      DashboardCard(
-                        icon: Icons.admin_panel_settings,
-                        count: "1",
-                        label: "Admin",
-                        color: Colors.green,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  ChartSection(
-                      title: "Gender Distribution",
-                      chartWidget: PieChartWidget1(),
-                      legendItems: const [
-                        {'color': pieOne, 'label': 'Male', 'value': 56},
-                        {'color': pieTwo, 'label': 'Female', 'value': 44},
-                      ]),
-                  ChartSection(
-                    title: "Size Distribution",
-                    chartWidget: BarChartWidget(),
-                    legendItems: const [
-                      {'color': Colors.blue, 'label': 'Pedatric Wheelchair', 'value': 10},
-                      {'color': Color.fromARGB(255, 2, 5, 2), 'label': 'American Wheelchair',  'value': 5},
-                      {'color': Colors.red, 'label': '(FWP) WheelChair', 'value': 15},
-                      {'color': Colors.orange, 'label': 'Walker', 'value': 12},
-                      {'color': Colors.purple, 'label': 'Crutches', 'value': 8},
-                      {'color': Colors.blueGrey, 'label': 'Cane', 'value': 9}
-                    ],
-                  ),
-                  ChartSection(
-                    title: "Approval Status",
-                    chartWidget: PieChartWidget2(),
-                    legendItems: const [
-                      {'color': pieThree, 'label': 'Approved',  'value': 56},
-                      {'color': pieFour, 'label': 'Pending',  'value': 44},
-                    ],
-                  ),
-                ],
-              ),
+    return statsAsyncValue.when(
+      data: (stats) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Dashboard'),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {},
             ),
-          );
-        },
-      ),
+            backgroundColor: Colors.deepPurple,
+          ),
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              double width = constraints.maxWidth;
+
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GridView.count(
+                        shrinkWrap: true,
+                        crossAxisCount: width > 600 ? 4 : 2,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        childAspectRatio: width > 600 ? 3 / 2 : 2 / 2.3,
+                        physics: const NeverScrollableScrollPhysics(),
+                        children: [
+                          DashboardCard(
+                            icon: Icons.people,
+                            count: stats['disability']?['total_records']
+                                    ?.toString() ??
+                                '0',
+                            label: "Total Records",
+                            color: Colors.green,
+                          ),
+                          DashboardCard(
+                            icon: Icons.wheelchair_pickup,
+                            count: stats['disability']['equipments']
+                                .values
+                                .reduce((sum, val) => sum + val)
+                                .toString(),
+                            label: "Total Wheelchair",
+                            color: Colors.green,
+                          ),
+                          DashboardCard(
+                            icon: Icons.group,
+                            count: stats['users']?['sub_admins']?.toString() ??
+                                '0',
+                            label: "Sub Admins",
+                            color: Colors.green,
+                          ),
+                          DashboardCard(
+                            icon: Icons.admin_panel_settings,
+                            count: stats['users']?['admins']?.toString() ?? '0',
+                            label: "Admin",
+                            color: Colors.green,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      ChartSection(
+                          title: "Gender Distribution",
+                          chartWidget: PieChartWidget1(
+                            maleCount: stats['disability']?['num_of_males']?.toDouble() ?? '0',
+                            femaleCount: stats['disability']?['num_of_females']?.toDouble() ?? '0',
+                          ),
+                          legendItems: [
+                            {
+                              'color': pieOne,
+                              'label': 'Male',
+                              'value':
+                                  stats['disability']?['num_of_males']?.toDouble() ?? '0',
+                            },
+                            {
+                              'color': pieTwo,
+                              'label': 'Female',
+                              'value': stats['disability']?['num_of_females']?.toDouble() ?? '0',
+                            },
+                          ]),
+                      ChartSection(
+                        title: "Equipment type",
+                        chartWidget: BarChartWidget(),
+                        legendItems: const [
+                          {
+                            'color': Colors.blue,
+                            'label': 'Pedatric Wheelchair',
+                            'value': 10
+                          },
+                          {
+                            'color': Color.fromARGB(255, 2, 5, 2),
+                            'label': 'American Wheelchair',
+                            'value': 5
+                          },
+                          {
+                            'color': Colors.red,
+                            'label': '(FWP) WheelChair',
+                            'value': 15
+                          },
+                          {
+                            'color': Colors.orange,
+                            'label': 'Walker',
+                            'value': 12
+                          },
+                          {
+                            'color': Colors.purple,
+                            'label': 'Crutches',
+                            'value': 8
+                          },
+                          {
+                            'color': Colors.blueGrey,
+                            'label': 'Cane',
+                            'value': 9
+                          }
+                        ],
+                      ),
+                      ChartSection(
+                        title: "Approval Status",
+                        chartWidget: PieChartWidget2(
+                            apporovedCount: stats['disability']?
+                                    ['approved_records']
+                                ?.toDouble() ?? '0',
+                            pendingCount: stats['disability']?
+                                    ['unapproved_records']
+                                ?.toDouble() ?? '0'),
+                        legendItems: [
+                          {
+                            'color': pieThree,
+                            'label': 'Approved',
+                            'value': stats['disability']?['approved_records']
+                              ?.toDouble() ?? '0',
+                          },
+                          {
+                            'color': pieFour,
+                            'label': 'Pending',
+                            'value': stats['disability']?['unapproved_records']
+                              ?.toDouble() ?? '0',
+                          },
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(child: Text('Error: $error')),
     );
   }
 }
@@ -173,7 +241,7 @@ class Legend extends StatelessWidget {
             ),
             const SizedBox(width: 4),
             Text(
-              "(${indicator['value']}%)",
+              "(${indicator['value']})",
               style: const TextStyle(fontSize: 12),
             ),
           ],
@@ -241,22 +309,31 @@ class ChartSection extends StatelessWidget {
 }
 
 class PieChartWidget1 extends StatelessWidget {
+  final double maleCount;
+  final double femaleCount;
+
+  PieChartWidget1({required this.maleCount, required this.femaleCount});
+
   @override
   Widget build(BuildContext context) {
+    double total = maleCount + femaleCount;
+    double malePercentage = (maleCount / total) * 100;
+    double femalePercentage = (femaleCount / total) * 100;
+
     return PieChart(
       PieChartData(
         sections: [
           PieChartSectionData(
             color: pieOne,
-            value: 56,
-            title: "56%",
+            value: malePercentage,
+            title: "${malePercentage.toStringAsFixed(0)}%",
             radius: 50,
             titleStyle: const TextStyle(color: Colors.white, fontSize: 12),
           ),
           PieChartSectionData(
             color: pieTwo,
-            value: 44,
-            title: "44%",
+            value: femalePercentage,
+            title: "${femalePercentage.toStringAsFixed(0)}%",
             radius: 50,
             titleStyle: const TextStyle(color: Colors.white, fontSize: 12),
           ),
@@ -267,22 +344,29 @@ class PieChartWidget1 extends StatelessWidget {
 }
 
 class PieChartWidget2 extends StatelessWidget {
+  final double apporovedCount;
+  final double pendingCount;
+  PieChartWidget2({required this.apporovedCount, required this.pendingCount});
   @override
   Widget build(BuildContext context) {
+    double tot = apporovedCount + pendingCount;
+    double approvedPercentage = (apporovedCount / tot) * 100;
+    double pendingPercentage = (pendingCount / tot) * 100;
+
     return PieChart(
       PieChartData(
         sections: [
           PieChartSectionData(
             color: pieThree,
-            value: 56,
-            title: "56%",
+            value: approvedPercentage,
+            title: "${approvedPercentage.toStringAsFixed(0)}%",
             radius: 50,
             titleStyle: const TextStyle(color: Colors.white, fontSize: 12),
           ),
           PieChartSectionData(
             color: pieFour,
-            value: 44,
-            title: "44%",
+            value: pendingPercentage,
+            title: "${pendingPercentage.toStringAsFixed(0)}%",
             radius: 50,
             titleStyle: const TextStyle(color: Colors.white, fontSize: 12),
           ),
@@ -358,7 +442,7 @@ class BarChartWidget extends StatelessWidget {
                                 style: TextStyle(fontSize: 12));
                           case 6:
                             return const Text("Cane",
-                            style: TextStyle(fontSize: 12));
+                                style: TextStyle(fontSize: 12));
                           default:
                             return const Text('');
                         }
@@ -393,8 +477,9 @@ class BarChartWidget extends StatelessWidget {
                     x: 5,
                     barRods: [BarChartRodData(toY: 8, color: Colors.purple)],
                   ),
-                  BarChartGroupData(x: 6,
-                  barRods: [BarChartRodData(toY: 9, color: Colors.blueGrey)])
+                  BarChartGroupData(x: 6, barRods: [
+                    BarChartRodData(toY: 9, color: Colors.blueGrey)
+                  ])
                 ],
               ),
             ),
