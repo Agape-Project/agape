@@ -98,7 +98,7 @@ class ProfileScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 40),
               ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 400),
+                constraints: const BoxConstraints(maxWidth: 600),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
