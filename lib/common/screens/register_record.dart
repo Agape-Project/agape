@@ -77,7 +77,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
           _selectedGender = record['gender'] ?? null;
           _dateController.text = record['date_of_birth'] ?? '';
           _phoneController.text = record['phone_number'] ?? '';
-          _selectedRegion = record['region'] ?? 'amhara';
+          _selectedRegion = record['region'] ?? null;
           _zoneController.text = record['zone'] ?? '';
           _cityController.text = record['city'] ?? '';
           _woredaController.text = record['woreda'] ?? '';
@@ -108,7 +108,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
               ? File(record['kebele_id_image'])
               : null;
           _warrantIdCardFile = record['warrant']?['id_image'] != null
-              ? File(record['warrant']['id_image'])
+              ? File(record['warrant']?['id_image'])
               : null;
 
           _isDataLoaded = true;
@@ -233,7 +233,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
         }
         resetForm();
       } catch (e) {
-        print(e.toString());
+
         showCustomSnackBar(context,
             title: 'Error',
             message: e.toString(),
@@ -435,7 +435,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                   },
                   items: const [
                     DropdownMenuItem(
-                      value: 'Addis Ababa',
+                      value: 'Addis_Ababa',
                       child: Text('Addis Ababa'),
                     ),
                     DropdownMenuItem(
@@ -447,15 +447,15 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                       child: Text('Amhara'),
                     ),
                     DropdownMenuItem(
-                      value: 'Benishangul-Gumuz ',
+                      value: 'Benishangul_Gumuz ',
                       child: Text('Benishangul-Gumuz'),
                     ),
                     DropdownMenuItem(
-                      value: 'Central Ethiopia ',
+                      value: 'Central_Ethiopia ',
                       child: Text('Central Ethiopia'),
                     ),
                     DropdownMenuItem(
-                      value: 'Dire Dawa ',
+                      value: 'Dire_Dawa ',
                       child: Text('Dire Dawa'),
                     ),
                     DropdownMenuItem(
@@ -479,7 +479,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
                       child: Text('Somali'),
                     ),
                     DropdownMenuItem(
-                      value: 'South Ethiopia ',
+                      value: 'South_Ethiopia ',
                       child: Text('South Ethiopia'),
                     ),
                     DropdownMenuItem(
@@ -961,7 +961,7 @@ class _CustomStepperState extends ConsumerState<RegisterRecord> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Register"),
+        title: Text("${widget.recordId == null ? "Register New Record": "Update Record"}" ),
         centerTitle: true,
       ),
       body: Center(
