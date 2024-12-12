@@ -46,29 +46,30 @@ class _UserListPageState extends ConsumerState<UserListPage> {
 
   void _fetchUserRecords({String query = ''}) {
     final recordController = ref.read(disabilityRecordControllerProvider);
-    if (query.isEmpty) {
-      _userRecords = recordController.getAllRecords();
-    } else {
-      _userRecords = recordController.searchRecords(query);
-    }
-    setState(() {});
+    setState(() {
+      _userRecords = query.isEmpty
+          ? recordController.getAllRecords()
+          : recordController.searchRecords(query);
+    });
   }
 
-void _fetchFilteredRecords() async{
-     final recordController = ref.read(disabilityRecordControllerProvider);
-  try {
-    _userRecords = Future.value(await recordController.filterRecords(
-      gender: selectedGender,
-      region: selectedRegion,
-      month: selectedMonth,
-      equipmentType: selectedEquipmentType,
-      year: selectedYear,
-    ));
-    setState(() {}); 
-  } catch (e) {
-    print('Error fetching records: $e');
-  }
-  }
+  void _fetchFilteredRecords() async {
+    final recordController = ref.read(disabilityRecordControllerProvider);
+    try {
+      _userRecords = recordController.filterRecords(
+        gender: selectedGender,
+        region: selectedRegion,
+        month: selectedMonth,
+        equipmentType: selectedEquipmentType,
+        year: selectedYear,
+      );
+
+      print("User Records: $_userRecords");
+      setState(() {});
+    } catch (e) {
+      print(e.toString());
+}  
+}
 
   @override
   Widget build(BuildContext context) {
@@ -159,8 +160,7 @@ void _fetchFilteredRecords() async{
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                " ${record['first_name']} ${record['middle_name']}" ??
-                                                    'Unknown',
+                                                " ${record['first_name']} ${record['middle_name']}",
                                                 style: const TextStyle(
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 16,
@@ -338,8 +338,8 @@ void _fetchFilteredRecords() async{
                       foregroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(
-                            color: const Color.fromARGB(255, 0, 0, 0)),
+                        side: const BorderSide(
+                            color:  Color.fromARGB(255, 0, 0, 0)),
                       ),
                       elevation: 0,
                     ),
@@ -377,7 +377,7 @@ void _fetchFilteredRecords() async{
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      prefixIcon: Icon(Icons.person_outline),
+                      prefixIcon: const Icon(Icons.person_outline),
                       labelText: 'Equipment Type',
                     ),
                     items: [
