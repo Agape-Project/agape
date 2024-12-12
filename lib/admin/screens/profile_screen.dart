@@ -64,8 +64,7 @@ class ProfileScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 80),
               Text(
-                "${user['first_name']} ${user['middle_name']}" ??
-                    "Unknown User",
+                "${user['first_name']} ${user['middle_name']}",
                 style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
