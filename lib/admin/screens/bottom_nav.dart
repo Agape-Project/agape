@@ -22,12 +22,10 @@ class _AdminNavigationState extends ConsumerState<AdminNavigation> {
       UserListPage(),
       DashboardStats(),
       ExportPage(),
-      SettingScreen(),
+      const SettingScreen(),
 
     ];
   
-
-  // Method to handle when an icon is tapped
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -65,12 +63,12 @@ class _AdminNavigationState extends ConsumerState<AdminNavigation> {
         ],
         currentIndex: _selectedIndex,
 
-        selectedItemColor: Colors.brown, // Icon color when selected
+        selectedItemColor: Colors.brown, 
         unselectedItemColor: Colors.white, 
         backgroundColor: const Color.fromRGBO(9, 15, 44, 1), 
         selectedFontSize: 14, 
         unselectedFontSize: 12, 
-        iconSize: 30, // Larger icon size
+        iconSize: 30, 
         onTap: _onItemTapped, 
       ),
     );
