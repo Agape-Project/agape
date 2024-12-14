@@ -52,7 +52,7 @@ class DashboardStats extends ConsumerWidget {
                                 .values
                                 .reduce((sum, val) => sum + val)
                                 .toString(),
-                            label: "Total Wheelchair",
+                            label: "Total Equipments",
                             color: Colors.green,
                           ),
                           DashboardCard(
@@ -74,79 +74,96 @@ class DashboardStats extends ConsumerWidget {
                       ChartSection(
                           title: "Gender Distribution",
                           chartWidget: PieChartWidget1(
-                            maleCount: stats['disability']?['num_of_males']?.toDouble() ?? '0',
-                            femaleCount: stats['disability']?['num_of_females']?.toDouble() ?? '0',
+                            maleCount: stats['disability']?['num_of_males']
+                                    ?.toDouble() ??
+                                '0',
+                            femaleCount: stats['disability']?['num_of_females']
+                                    ?.toDouble() ??
+                                '0',
                           ),
                           legendItems: [
                             {
                               'color': pieOne,
                               'label': 'Male',
-                              'value':
-                                  stats['disability']?['num_of_males']?.toDouble() ?? '0',
+                              'value': stats['disability']?['num_of_males']
+                                      ?.toDouble() ??
+                                  '0',
                             },
                             {
                               'color': pieTwo,
                               'label': 'Female',
-                              'value': stats['disability']?['num_of_females']?.toDouble() ?? '0',
+                              'value': stats['disability']?['num_of_females']
+                                      ?.toDouble() ??
+                                  '0',
                             },
                           ]),
                       ChartSection(
-                        title: "Equipment type",
-                        chartWidget: BarChartWidget(),
-                        legendItems: const [
-                          {
-                            'color': Colors.blue,
-                            'label': 'Pedatric Wheelchair',
-                            'value': 10
-                          },
-                          {
-                            'color': Color.fromARGB(255, 2, 5, 2),
-                            'label': 'American Wheelchair',
-                            'value': 5
-                          },
-                          {
-                            'color': Colors.red,
-                            'label': '(FWP) WheelChair',
-                            'value': 15
-                          },
-                          {
-                            'color': Colors.orange,
-                            'label': 'Walker',
-                            'value': 12
-                          },
-                          {
-                            'color': Colors.purple,
-                            'label': 'Crutches',
-                            'value': 8
-                          },
-                          {
-                            'color': Colors.blueGrey,
-                            'label': 'Cane',
-                            'value': 9
-                          }
-                        ],
-                      ),
+                          title: "Equipment type",
+                          chartWidget: BarChartWidget(
+                            equipmentCounts: {
+                              'Pedatric Wheelchair': stats['disability']
+                                              ?['equipments']
+                                          ?['num_of_pediatric_wheelchair']
+                                      ?.toDouble() ??
+                                  0.0,
+                              'American Wheelchair': stats['disability']
+                                              ?['equipments']
+                                          ?['num_of_american_wheelchair']
+                                      ?.toDouble() ??
+                                  0.0,
+                              'FWP WheelChair': stats['disability']
+                                              ?['equipments']
+                                          ?['num_of_FWP_wheelchair']
+                                      ?.toDouble() ??
+                                  0.0,
+                              'Walker': stats['disability']?['equipments']
+                                          ?['num_of_walker']
+                                      ?.toDouble() ??
+                                  0.0,
+                              'Crutches': stats['disability']?['equipments']
+                                          ?['num_of_crutches']
+                                      ?.toDouble() ??
+                                  0.0,
+                              'Cane': stats['disability']?['equipments']
+                                          ?['num_of_cane']
+                                      ?.toDouble() ??
+                                  0.0,
+                            },
+                          ),
+                          legendItems: (stats['disability']['equipments']
+                                  as Map<String, dynamic>)
+                              .entries
+                              .map((entry) => {
+                                    'color': Colors.blue,
+                                    'label': entry.key,
+                                    'value': entry.value,
+                                  })
+                              .toList()),
                       ChartSection(
                         title: "Approval Status",
                         chartWidget: PieChartWidget2(
-                            apporovedCount: stats['disability']?
-                                    ['approved_records']
-                                ?.toDouble() ?? '0',
-                            pendingCount: stats['disability']?
-                                    ['unapproved_records']
-                                ?.toDouble() ?? '0'),
+                            apporovedCount: stats['disability']
+                                        ?['approved_records']
+                                    ?.toDouble() ??
+                                '0',
+                            pendingCount: stats['disability']
+                                        ?['unapproved_records']
+                                    ?.toDouble() ??
+                                '0'),
                         legendItems: [
                           {
                             'color': pieThree,
                             'label': 'Approved',
                             'value': stats['disability']?['approved_records']
-                              ?.toDouble() ?? '0',
+                                    ?.toDouble() ??
+                                '0',
                           },
                           {
                             'color': pieFour,
                             'label': 'Pending',
                             'value': stats['disability']?['unapproved_records']
-                              ?.toDouble() ?? '0',
+                                    ?.toDouble() ??
+                                '0',
                           },
                         ],
                       ),
@@ -218,7 +235,7 @@ class DashboardCard extends StatelessWidget {
 class Legend extends StatelessWidget {
   final List<Map<String, dynamic>> indicators;
 
-  const Legend({required this.indicators});
+  const Legend({super.key, required this.indicators});
 
   @override
   Widget build(BuildContext context) {
@@ -290,7 +307,7 @@ class ChartSection extends StatelessWidget {
                   child: SizedBox(height: 200, child: chartWidget),
                 ),
                 if (!isSmallScreen)
-                  const SizedBox(width: 16), // Spacing between chart and legend
+                  const SizedBox(width: 16), 
                 if (!isSmallScreen)
                   Expanded(
                     flex: 1,
@@ -299,7 +316,7 @@ class ChartSection extends StatelessWidget {
               ],
             ),
             if (isSmallScreen)
-              const SizedBox(height: 16), // Spacing before the legend
+              const SizedBox(height: 16), 
             if (isSmallScreen) Legend(indicators: legendItems),
           ],
         ),
@@ -377,115 +394,73 @@ class PieChartWidget2 extends StatelessWidget {
 }
 
 class BarChartWidget extends StatelessWidget {
+  final Map<String, double> equipmentCounts;
+
+  BarChartWidget({required this.equipmentCounts});
+
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        double chartHeight = constraints.maxHeight * 0.7;
-        double chartWidth = constraints.maxWidth * 0.9;
+    double total = equipmentCounts.values.reduce((sum, value) => sum + value);
 
-        return Center(
-          child: SizedBox(
-            width: chartWidth,
-            height: chartHeight,
-            child: BarChart(
-              BarChartData(
-                gridData: FlGridData(show: true),
-                borderData: FlBorderData(
-                  border: const Border(
-                    left: BorderSide(color: Colors.black),
-                    bottom: BorderSide(color: Colors.black),
-                  ),
-                ),
-                titlesData: FlTitlesData(
-                  leftTitles: AxisTitles(
-                    axisNameWidget: const Text(
-                      'Count',
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                    ),
-                    axisNameSize: 20,
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 40,
-                      getTitlesWidget: (value, meta) {
-                        return Text(value.toInt().toString(),
-                            style: const TextStyle(fontSize: 12));
-                      },
-                    ),
-                  ),
-                  bottomTitles: AxisTitles(
-                    axisNameWidget: const Text(
-                      'Equipment Types',
-                      style:
-                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                    ),
-                    axisNameSize: 20,
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) {
-                        switch (value.toInt()) {
-                          case 1:
-                            return const Text("PW",
-                                style: TextStyle(fontSize: 12));
-                          case 2:
-                            return const Text("AW",
-                                style: TextStyle(fontSize: 12));
-                          case 3:
-                            return const Text("FWP",
-                                style: TextStyle(fontSize: 12));
-                          case 4:
-                            return const Text("Wk",
-                                style: TextStyle(fontSize: 12));
-                          case 5:
-                            return const Text("Cr",
-                                style: TextStyle(fontSize: 12));
-                          case 6:
-                            return const Text("Cane",
-                                style: TextStyle(fontSize: 12));
-                          default:
-                            return const Text('');
-                        }
-                      },
-                    ),
-                  ),
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                ),
-                barGroups: [
-                  BarChartGroupData(
-                    x: 1,
-                    barRods: [BarChartRodData(toY: 10, color: Colors.blue)],
-                  ),
-                  BarChartGroupData(
-                    x: 2,
-                    barRods: [BarChartRodData(toY: 5, color: Colors.green)],
-                  ),
-                  BarChartGroupData(
-                    x: 3,
-                    barRods: [BarChartRodData(toY: 15, color: Colors.red)],
-                  ),
-                  BarChartGroupData(
-                    x: 4,
-                    barRods: [BarChartRodData(toY: 12, color: Colors.orange)],
-                  ),
-                  BarChartGroupData(
-                    x: 5,
-                    barRods: [BarChartRodData(toY: 8, color: Colors.purple)],
-                  ),
-                  BarChartGroupData(x: 6, barRods: [
-                    BarChartRodData(toY: 9, color: Colors.blueGrey)
-                  ])
-                ],
-              ),
+    return BarChart(
+      BarChartData(
+        gridData: FlGridData(show: true),
+        borderData: FlBorderData(
+          border: const Border(
+            left: BorderSide(color: Colors.black),
+            bottom: BorderSide(color: Colors.black),
+          ),
+        ),
+        titlesData: FlTitlesData(
+          leftTitles: AxisTitles(
+            axisNameWidget: const Text(
+              'Count',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+            axisNameSize: 20,
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 40,
+              getTitlesWidget: (value, meta) {
+                return Text(value.toInt().toString(),
+                    style: const TextStyle(fontSize: 12));
+              },
             ),
           ),
-        );
-      },
+          bottomTitles: AxisTitles(
+            axisNameWidget: const Text(
+              'Equipment Types',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+            axisNameSize: 20,
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                int index = value.toInt();
+                List<String> labels = equipmentCounts.keys.toList();
+                if (index < labels.length) {
+                  return Text(labels[index],
+                      style: const TextStyle(fontSize: 12));
+                }
+                return const Text('');
+              },
+            ),
+          ),
+        ),
+        barGroups: equipmentCounts.entries.map((entry) {
+          double percentage = (entry.value / total) * 100;
+          return BarChartGroupData(
+            x: equipmentCounts.keys.toList().indexOf(entry.key),
+            barRods: [
+              BarChartRodData(
+                toY: percentage,
+                color: Colors.blue,
+                width: 15,
+              ),
+            ],
+          );
+        }).toList(),
+      ),
     );
   }
 }
