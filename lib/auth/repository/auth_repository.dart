@@ -65,8 +65,7 @@ class AuthRepository {
         "Authorization": token != null ? "Bearer $token" : "",
       },
     );
-     // Log the response status code and body
-    print('Response Status Code: ${response.statusCode}');
+
     print('Response Body: ${response.body}');
 
     if (response.statusCode == 200) {
@@ -97,13 +96,9 @@ Future<List<Map<String, dynamic>>> getBlockedUsers() async {
     },
   );
 
-  print('Response Status Code: ${response.statusCode}');
-  print('Response Body: ${response.body}');
-
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
 
-    // Try to retrieve users from different response formats
     List<dynamic>? users;
 
     if (data['data'] is List) {
@@ -116,7 +111,6 @@ Future<List<Map<String, dynamic>>> getBlockedUsers() async {
       throw Exception('No users found in the response');
     }
 
-    print('Parsed Users: $users');
     return List<Map<String, dynamic>>.from(users);
   } else {
     throw Exception(
