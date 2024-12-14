@@ -231,6 +231,7 @@ class DisabilityRecordRepository {
 
     final url =
         Uri.parse('$baseUrl/api/disability-records/filter/?$queryString');
+    
     final token = await TokenManager.getAccessToken();
     final response = await http.get(
       url,
@@ -265,9 +266,6 @@ class DisabilityRecordRepository {
         "Authorization": token != null ? "Bearer $token" : "",
       },
     );
-
-    print(response.body);
-    print(response.statusCode);
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
@@ -313,8 +311,6 @@ class DisabilityRecordRepository {
         "Authorization": token != null ? "Bearer $token" : "",
       },
     );
-
-    print(response.body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       if (data == null || data is! Map) {
