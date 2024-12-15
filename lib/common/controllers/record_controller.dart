@@ -55,7 +55,6 @@ class DisabilityRecordController {
       rethrow;
     }
   }
-// filter records by query
 Future<List<Map<String, dynamic>>> filterRecords({
   String? gender,
   String? region,
@@ -73,11 +72,9 @@ Future<List<Map<String, dynamic>>> filterRecords({
     );
     return response;
   } catch (e) {
-    // Handle and rethrow any error
     rethrow;
   }
 }
-
 
   // search records
   Future<List<Map<String, dynamic>>> searchRecords(String query) async {
