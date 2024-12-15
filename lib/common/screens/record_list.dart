@@ -63,13 +63,18 @@ class _UserListPageState extends ConsumerState<UserListPage> {
         equipmentType: selectedEquipmentType,
         year: selectedYear,
       );
-
-      print("User Records: $_userRecords");
+      print('Fetching filtered records $selectedGender');
+      print('Fetching filtered records $selectedRegion');
+      print('Fetching filtered records $selectedMonth');
+      print('Fetching filtered records $selectedEquipmentType');
+      print('Fetching filtered records $selectedYear');
+      print('Fetching filtered records $selectedYear');
+      
       setState(() {});
     } catch (e) {
       print(e.toString());
-}  
-}
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -339,7 +344,7 @@ class _UserListPageState extends ConsumerState<UserListPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                         side: const BorderSide(
-                            color:  Color.fromARGB(255, 0, 0, 0)),
+                            color: Color.fromARGB(255, 0, 0, 0)),
                       ),
                       elevation: 0,
                     ),
