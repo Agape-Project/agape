@@ -15,12 +15,13 @@ class _UserListPageState extends ConsumerState<UserListPage> {
   late Future<List<Map<String, dynamic>>> _userRecords;
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
-
+  bool _isLoading = true;
   String? selectedGender;
   String? selectedRegion;
   String? selectedMonth;
   String? selectedEquipmentType;
   int? selectedYear;
+  
 
   @override
   void initState() {
@@ -44,14 +45,20 @@ class _UserListPageState extends ConsumerState<UserListPage> {
     });
   }
 
-  void _fetchUserRecords({String query = ''}) {
-    final recordController = ref.read(disabilityRecordControllerProvider);
-    setState(() {
-      _userRecords = query.isEmpty
-          ? recordController.getAllRecords()
-          : recordController.searchRecords(query);
-    });
-  }
+void _fetchUserRecords({String query = ''}) {
+  final recordController = ref.read(disabilityRecordControllerProvider);
+  setState(() {
+    if (query.isEmpty) {
+      _isLoading = true; 
+    }
+    _userRecords = query.isEmpty
+        ? recordController.getAllRecords()
+        : recordController.searchRecords(query);
+    if (query.isNotEmpty) {
+      _isLoading = false; 
+    }
+  });
+}
 
   void _fetchFilteredRecords() async {
     final recordController = ref.read(disabilityRecordControllerProvider);
@@ -63,13 +70,6 @@ class _UserListPageState extends ConsumerState<UserListPage> {
         equipmentType: selectedEquipmentType,
         year: selectedYear,
       );
-      print('Fetching filtered records $selectedGender');
-      print('Fetching filtered records $selectedRegion');
-      print('Fetching filtered records $selectedMonth');
-      print('Fetching filtered records $selectedEquipmentType');
-      print('Fetching filtered records $selectedYear');
-      print('Fetching filtered records $selectedYear');
-      
       setState(() {});
     } catch (e) {
       print(e.toString());
@@ -86,7 +86,7 @@ class _UserListPageState extends ConsumerState<UserListPage> {
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: _userRecords,
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
+                if (_isLoading && snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: LoadingIndicatorWidget());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
